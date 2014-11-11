@@ -39,14 +39,14 @@ public class CompilerTest extends OutputTest {
 		Engine engine = new EngineImpl();
 		engine.setProgram(compiler.compile(Arrays.asList(methodInfo)));
 		engine.run();
-		assertEquals("a=7\nb=49\n", output.toString());
+		assertEquals("a=7" + newLine + "b=49" + newLine, output.toString());
 	}
 
 	@Test
 	public void compileConcatenation() throws LangException {
 		List<String> statements = new LinkedList<String>();
-		statements.add("def title = 'барон'");
-		statements.add("def name = 'Петя'");
+		statements.add("def title = 'duke'");
+		statements.add("def name = 'Peter'");
 		statements.add("show name + ' - ' + title");
 
 		MethodInfo methodInfo = new MethodInfo();
@@ -58,7 +58,7 @@ public class CompilerTest extends OutputTest {
 		Engine engine = new EngineImpl();
 		engine.setProgram(compiler.compile(Arrays.asList(methodInfo)));
 		engine.run();
-		assertEquals("Петя - барон\n", output.toString());
+		assertEquals("Peter - duke" + newLine, output.toString());
 	}
 
 	@Test(expected = ParserException.class)
@@ -76,28 +76,28 @@ public class CompilerTest extends OutputTest {
 	@Test
 	public void compileIfBlockWithoutElse() throws LangException {
 		MethodReader methodReader = new MethodReaderImpl(
-				"def main() {\n" +
-				"def a = 2;\n" +
-				"if (a ==  4/2) { a = a + 5; }\n" +
-				"show a;\n" +
-				"}"
+				"def main() {" + newLine +
+						"def a = 2;" + newLine +
+						"if (a ==  4/2) { a = a + 5; }" + newLine +
+						"show a;" + newLine +
+						"}"
 		);
 		CompilerImpl compiler = new CompilerImpl();
 		Program program = compiler.compile(Arrays.asList(methodReader.readMethod()));
 		Engine engine = new EngineImpl();
 		engine.setProgram(program);
 		engine.run();
-		assertEquals("7\n", output.toString());
+		assertEquals("7" + newLine, output.toString());
 	}
 
 	@Test(expected = ParserException.class)
 	public void compileElseBlock() throws LangException {
 		MethodReader methodReader = new MethodReaderImpl(
-				"def main() {\n" +
-					"def a = 2;\n" +
-					"else { a = a + 5; }\n" +
-					"show a;\n" +
-				"}"
+				"def main() {" + newLine +
+						"def a = 2;" + newLine +
+						"else { a = a + 5; }" + newLine +
+						"show a;" + newLine +
+						"}"
 		);
 		CompilerImpl compiler = new CompilerImpl();
 		compiler.compile(Arrays.asList(methodReader.readMethod()));
@@ -106,112 +106,112 @@ public class CompilerTest extends OutputTest {
 	@Test
 	public void compileIfBlockWithElse() throws LangException {
 		MethodReader methodReader = new MethodReaderImpl(
-				"def main() {\n" +
-					"def a = 0;\n" +
-					"if (a <> 0) { a = a * 5; }\n" +
-					"else { a = a + 5; }\n" +
-					"show a;\n" +
-				"}"
+				"def main() {" + newLine +
+						"def a = 0;" + newLine +
+						"if (a <> 0) { a = a * 5; }" + newLine +
+						"else { a = a + 5; }" + newLine +
+						"show a;" + newLine +
+						"}"
 		);
 		CompilerImpl compiler = new CompilerImpl();
 		Program program = compiler.compile(Arrays.asList(methodReader.readMethod()));
 		Engine engine = new EngineImpl();
 		engine.setProgram(program);
 		engine.run();
-		assertEquals("5\n", output.toString());
+		assertEquals("5" + newLine, output.toString());
 	}
 
 	@Test
 	public void compileIfBlockInnerIfTrue() throws LangException {
 		MethodReader methodReader = new MethodReaderImpl(
-			"def main() {\n" +
-				"def a = 2;\n" +
-				"if (a == 2 and 5 > 4) { a = a + 3; if(a >= 5 or 2 > 1) {a = a * a * a;} }\n" +
-				"else {a = a + 7;}\n" +
-				"show a;\n" +
-			"}"
+				"def main() {" + newLine +
+						"def a = 2;" + newLine +
+						"if (a == 2 and 5 > 4) { a = a + 3; if(a >= 5 or 2 > 1) {a = a * a * a;} }" + newLine +
+						"else {a = a + 7;}" + newLine +
+						"show a;" + newLine +
+						"}"
 		);
 		CompilerImpl compiler = new CompilerImpl();
 		Program program = compiler.compile(Arrays.asList(methodReader.readMethod()));
 		Engine engine = new EngineImpl();
 		engine.setProgram(program);
 		engine.run();
-		assertEquals("125\n", output.toString());
+		assertEquals("125"+newLine+"", output.toString());
 	}
 
 	@Test
 	public void compileIfBlockInnerIfFalseWithoutElse() throws LangException {
 		MethodReader methodReader = new MethodReaderImpl(
-			"def main() {\n" +
-				"def a = 2;\n" +
-				"if (a >= 6 - 2 * 2) { a = a + 3; if(a > 5) {a = a * a * a;} }\n" +
-				"else {a = a + 7;}\n" +
-				"show a;\n" +
-			"}"
+				"def main() {" + newLine +
+						"def a = 2;" + newLine +
+						"if (a >= 6 - 2 * 2) { a = a + 3; if(a > 5) {a = a * a * a;} }" + newLine +
+						"else {a = a + 7;}" + newLine +
+						"show a;" + newLine +
+						"}"
 		);
 		CompilerImpl compiler = new CompilerImpl();
 		Program program = compiler.compile(Arrays.asList(methodReader.readMethod()));
 		Engine engine = new EngineImpl();
 		engine.setProgram(program);
 		engine.run();
-		assertEquals("5\n", output.toString());
+		assertEquals("5" + newLine, output.toString());
 	}
 
 	@Test
 	public void compileIfBlockInnerIfFalseWithElse() throws LangException {
 		MethodReader methodReader = new MethodReaderImpl(
-			"def main() {\n" +
-				"def a = 2;\n" +
-				"if (a <= 2) { \n" +
-				"\ta = a + 3; \n" +
-				"\tif(a-5 > 0) {\na = a * a * a;\n } \n" +
-				"\telse {\na = a * 12;\n} \n" +
-				"}\n" +
-				"else {\na = a + 7;\n}\n" +
-				"show a;\n" +
-			"}"
+				"def main() {" + newLine +
+						"def a = 2;" + newLine +
+						"if (a <= 2) { " + newLine +
+						"\ta = a + 3; " + newLine +
+						"\tif(a-5 > 0) {" + newLine + "a = a * a * a;" + newLine + " } " + newLine +
+						"\telse {" + newLine + "a = a * 12;" + newLine + "} " + newLine +
+						"}" + newLine +
+						"else {" + newLine + "a = a + 7;" + newLine + "}" + newLine +
+						"show a;" + newLine +
+						"}"
 		);
 		CompilerImpl compiler = new CompilerImpl();
 		Program program = compiler.compile(Arrays.asList(methodReader.readMethod()));
 		Engine engine = new EngineImpl();
 		engine.setProgram(program);
 		engine.run();
-		assertEquals("60\n", output.toString());
+		assertEquals("60" + newLine, output.toString());
 	}
 
 	@Test
 	public void compileWhileBlock() throws LangException {
 		MethodReader methodReader = new MethodReaderImpl(
-				"def main() {\n" +
-					"def a = 2;\n" +
-					"while (a <= 60) { a = a * 2; }\n" +
-					"show a;\n" +
-				"}"
+				"def main() {" + newLine +
+						"def a = 2;" + newLine +
+						"while (a <= 60) { a = a * 2; }" + newLine +
+						"show a;" + newLine +
+						"}"
 		);
 		CompilerImpl compiler = new CompilerImpl();
 		Program program = compiler.compile(Arrays.asList(methodReader.readMethod()));
 		Engine engine = new EngineImpl();
 		engine.setProgram(program);
 		engine.run();
-		assertEquals("64\n", output.toString());
+		assertEquals("64" + newLine, output.toString());
 	}
 
 	@Test
 	public void compileInnerWhileBlock() throws LangException {
 		MethodReader methodReader = new MethodReaderImpl(
-				"def main() {\n" +
-						"def a = 1;\n" +
+				"def main() {" + newLine +
+						"def a = 1;" + newLine +
 						"def b = 0;" +
 						"def c = a;" +
 						// todo исправить зацикливание, если убрать начало блока
 						"while ( a <= 3 ) {" +
 						"b = 3; c = 1;" +
 						"while (b > 0) {" +
-							"c = c * a; " +
-							"b = b - 1;" +
-						"}\n" +
+						"c = c * a; " +
+						"b = b - 1;" +
+						"}" + newLine +
 						"show c;" +
-						"a = a + 1;\n" +
+						"a = a + 1;" + newLine +
 						"}" +
 						"c = 0;}"
 		);
@@ -220,7 +220,7 @@ public class CompilerTest extends OutputTest {
 		Engine engine = new EngineImpl();
 		engine.setProgram(program);
 		engine.run();
-		assertEquals("1\n8\n27\n", output.toString());
+		assertEquals("1" + newLine + "8" + newLine + "27" + newLine, output.toString());
 	}
 
 

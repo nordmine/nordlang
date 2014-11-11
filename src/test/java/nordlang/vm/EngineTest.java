@@ -6,7 +6,6 @@ import nordlang.vm.api.Engine;
 import nordlang.vm.api.Program;
 import nordlang.vm.impl.EngineImpl;
 import nordlang.vm.impl.ProgramImpl;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.UUID;
@@ -62,7 +61,7 @@ public class EngineTest extends OutputTest {
 		engine.setProgram(program);
 		engine.run();
 
-		assertEquals("2\n", output.toString());
+		assertEquals("2" + newLine + "", output.toString());
 	}
 
 	@Test(expected = RunException.class)
@@ -112,7 +111,7 @@ public class EngineTest extends OutputTest {
 		engine.setProgram(program);
 		engine.run();
 
-		assertEquals("5\n11\n7\n22\n", output.toString());
+		assertEquals("5" + newLine + "11" + newLine + "7" + newLine + "22" + newLine + "", output.toString());
 	}
 
 	@Test
@@ -132,10 +131,10 @@ public class EngineTest extends OutputTest {
 		// show b;
 		program.addCommand(CommandType.GET, "$b");
 		program.addShowCommand();
-		// def c = 'Петя' + ' - ' + 'барон';
-		program.addCommand(CommandType.GET, "Петя");
+		// def c = 'Peter' + ' - ' + 'duke';
+		program.addCommand(CommandType.GET, "Peter");
 		program.addCommand(CommandType.PLUS, " - ");
-		program.addCommand(CommandType.PLUS, "барон");
+		program.addCommand(CommandType.PLUS, "duke");
 		program.addCommand(CommandType.DEF, "c");
 		// show c;
 		program.addCommand(CommandType.GET, "$c");
@@ -145,7 +144,7 @@ public class EngineTest extends OutputTest {
 		engine.setProgram(program);
 		engine.run();
 
-		assertEquals("a=5\n1 item\nПетя - барон\n", output.toString());
+		assertEquals("a=5" + newLine + "1 item" + newLine + "Peter - duke" + newLine + "", output.toString());
 	}
 
 	@Test
@@ -172,7 +171,7 @@ public class EngineTest extends OutputTest {
 		engine.setProgram(program);
 		engine.run();
 
-		assertEquals("10\n", output.toString());
+		assertEquals("10" + newLine + "", output.toString());
 	}
 
 }

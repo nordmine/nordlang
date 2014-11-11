@@ -1,5 +1,6 @@
 package nordlang.parser;
 
+import nordlang.CommonTest;
 import org.junit.Test;
 import nordlang.parser.api.SourceReader;
 import nordlang.exceptions.ParserException;
@@ -12,13 +13,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class SourceReaderTest {
+public class SourceReaderTest extends CommonTest {
 
 	@Test
 	public void readWhiteSpace() {
 		SourceReader reader = new SourceReaderImpl("   ");
 		assertEquals(3, reader.readWhiteSpace());
-		reader = new SourceReaderImpl("  \r\n ");
+		reader = new SourceReaderImpl("  \r" + newLine + " ");
 		assertEquals(5, reader.readWhiteSpace());
 		reader = new SourceReaderImpl("  abc");
 		assertEquals(2, reader.readWhiteSpace());

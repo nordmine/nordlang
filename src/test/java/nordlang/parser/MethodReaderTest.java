@@ -1,5 +1,6 @@
 package nordlang.parser;
 
+import nordlang.CommonTest;
 import nordlang.exceptions.ParserException;
 import nordlang.parser.api.MethodInfo;
 import nordlang.parser.api.MethodReader;
@@ -10,7 +11,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class MethodReaderTest {
+public class MethodReaderTest extends CommonTest {
 
 	@Test
 	public void readMethod() throws ParserException {
@@ -20,14 +21,14 @@ public class MethodReaderTest {
 		assertEquals(0, info.getParams().size());
 		assertEquals(1, info.getStatements().size());
 
-		reader = new MethodReaderImpl(" def cos (def x)\n{\ndef a = 2;\nshow a;\n}\n");
+		reader = new MethodReaderImpl(" def cos (def x)" + newLine + "{" + newLine + "def a = 2;" + newLine + "show a;" + newLine + "}" + newLine + "");
 		info = reader.readMethod();
 		assertEquals("cos", info.getName());
 		assertEquals(1, info.getParams().size());
 		assertEquals("x", info.getParams().get(0));
 		assertEquals(2, info.getStatements().size());
 
-		reader = new MethodReaderImpl("def Method1( def x , def y )\n{\ndef z\n= x * y ;\n}\n");
+		reader = new MethodReaderImpl("def Method1( def x , def y )" + newLine + "{" + newLine + "def z" + newLine + "= x * y ;" + newLine + "}" + newLine + "");
 		info = reader.readMethod();
 		assertEquals("Method1", info.getName());
 		assertEquals(2, info.getParams().size());
