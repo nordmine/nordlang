@@ -20,7 +20,7 @@ public class SourceReaderTest extends CommonTest {
 		SourceReader reader = new SourceReaderImpl("   ");
 		assertEquals(3, reader.readWhiteSpace());
 		reader = new SourceReaderImpl("  " + newLine + " ");
-		assertEquals(5, reader.readWhiteSpace());
+		assertEquals(3 + newLine.length(), reader.readWhiteSpace());
 		reader = new SourceReaderImpl("  abc");
 		assertEquals(2, reader.readWhiteSpace());
 		reader = new SourceReaderImpl("abc  ");
