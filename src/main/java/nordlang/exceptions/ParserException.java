@@ -1,11 +1,20 @@
 package nordlang.exceptions;
 
-/**
- * Ошибка, связанная с разбором исходного кода
- */
 public class ParserException extends LangException {
-	// todo помимо текста ошибки также нужно указывать позицию, в которой она произошла
-	public ParserException(String message) {
-		super(message);
-	}
+
+    private int line = 0;
+
+    public ParserException(String message) {
+        super(message);
+    }
+
+    public ParserException(int line, String message) {
+        super(message);
+        this.line = line;
+    }
+
+    @Override
+    public String getMessage() {
+        return String.format("Syntax error at line %s: %s", line, super.getMessage());
+    }
 }

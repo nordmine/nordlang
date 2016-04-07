@@ -1,11 +1,13 @@
 package nordlang.exceptions;
 
-/**
- * Ошибка времени выполнения.
- */
 public class RunException extends LangException {
 
-	public RunException(String message) {
-		super(message);
-	}
+    public RunException(String message) {
+        super(message);
+    }
+
+    @Override
+    public String getMessage() {
+        return "Runtime error: " + super.getMessage();
+    }
 }

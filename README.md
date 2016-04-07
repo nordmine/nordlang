@@ -2,12 +2,11 @@ nordlang
 ========
 Пример скрипта:
 
-def main() {
-	show 'Hello, world!';
-	def counter = 1;
-	while(counter <= 10) {
-		show counter * counter;
-		counter = counter + 1;
-	}
-	show 'end';
+int main() {
+    char[] message = "Hello, world!";
+    int i = 0;
+    while (counter < 13) {
+        echo message[i];
+        i = i + 1;
+    }
 }

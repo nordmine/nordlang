@@ -8,15 +8,15 @@ import java.io.PrintStream;
 
 public abstract class OutputTest extends CommonTest {
 
-	protected final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    protected final ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-	@Before
-	public void setUpStreams() {
-		System.setOut(new PrintStream(output));
-	}
+    @Before
+    public void setUpStreams() {
+        System.setOut(new PrintStream(output));
+    }
 
-	@After
-	public void cleanUpStreams() {
-		System.setOut(null);
-	}
+    @After
+    public void cleanUpStreams() {
+        System.setOut(null);
+    }
 }
