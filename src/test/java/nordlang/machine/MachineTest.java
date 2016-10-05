@@ -2,10 +2,10 @@ package nordlang.machine;
 
 import nordlang.OutputTest;
 import nordlang.exceptions.LangException;
-import nordlang.exceptions.ParserException;
+import nordlang.exceptions.SyntaxException;
 import nordlang.exceptions.RunException;
 import nordlang.lexer.Lexer;
-import nordlang.inter.Parser;
+import nordlang.syntax.Parser;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -119,7 +119,7 @@ public class MachineTest extends OutputTest {
     public void undefinedVariable() throws LangException {
         try {
             getResult("echo var;");
-        } catch (ParserException e) {
+        } catch (SyntaxException e) {
             assertEquals("Syntax error at line 1: variable 'var' is not defined", e.getMessage());
         }
     }
@@ -128,7 +128,7 @@ public class MachineTest extends OutputTest {
     public void incompatibleTypes() throws LangException {
         try {
             getResult("echo 1 + '2';");
-        } catch (ParserException e) {
+        } catch (SyntaxException e) {
             assertEquals("Syntax error at line 1: incompatible types: int, char", e.getMessage());
         }
     }
@@ -137,7 +137,7 @@ public class MachineTest extends OutputTest {
     public void nonBoolValueInIf() throws LangException {
         try {
             getResult("int a = 1; if (a) {echo 2;}");
-        } catch (ParserException e) {
+        } catch (SyntaxException e) {
             assertEquals("Syntax error at line 1: boolean value required in if", e.getMessage());
         }
     }
@@ -146,7 +146,7 @@ public class MachineTest extends OutputTest {
     public void nonBoolValueInWhile() throws LangException {
         try {
             getResult("int a = 1;\nwhile (a)\n{echo 2;}");
-        } catch (ParserException e) {
+        } catch (SyntaxException e) {
             assertEquals("Syntax error at line 2: boolean value required in while", e.getMessage());
         }
     }

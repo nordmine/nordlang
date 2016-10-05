@@ -5,22 +5,22 @@ import nordlang.machine.MachineState;
 
 public class DefineCommand extends Command {
 
-    private String name;
-    private int width;
+    private final int nameIndex;
+    private final int width;
 
-    public DefineCommand(String name, int width) {
-        this.name = name;
+    public DefineCommand(int nameIndex, int width) {
+        this.nameIndex = nameIndex;
         this.width = width;
     }
 
     @Override
     public void execute(MachineState state) throws RunException {
-        state.getScope().defineInCurrentScope(name, width);
+        state.getScope().defineInCurrentScope(nameIndex, width);
         state.incrementCmdIndex();
     }
 
     @Override
     public String toString() {
-        return String.format("DEF %s, width %s", name, width);
+        return String.format("DEF %s, width %s", nameIndex, width);
     }
 }

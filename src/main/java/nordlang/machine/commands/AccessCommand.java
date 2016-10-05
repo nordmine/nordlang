@@ -5,21 +5,21 @@ import nordlang.machine.MachineState;
 
 public class AccessCommand extends Command {
 
-    private String name;
+    private final int nameIndex;
 
-    public AccessCommand(String name) {
-        this.name = name;
+    public AccessCommand(int nameIndex) {
+        this.nameIndex = nameIndex;
     }
 
     @Override
     public void execute(MachineState state) throws RunException {
         int offset = state.getValueStack().pop();
-        state.getValueStack().push(state.getScope().get(name, offset));
+        state.getValueStack().push(state.getScope().get(nameIndex, offset));
         state.incrementCmdIndex();
     }
 
     @Override
     public String toString() {
-        return String.format("ACCESS %s", name);
+        return String.format("ACCESS %s", nameIndex);
     }
 }

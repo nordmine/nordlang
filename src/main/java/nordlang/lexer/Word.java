@@ -13,6 +13,7 @@ public class Word extends Token {
     public static final Word FALSE = new Word(Tag.FALSE, "false");
     public static final Word ECHO = new Word(Tag.ECHO, "echo");
 
+    // для переменных здесь содержится её имя
     private final String lexeme;
 
     public Word(Tag tag, String lexeme) {

@@ -1,6 +1,6 @@
 package nordlang.lexer;
 
-import nordlang.exceptions.ParserException;
+import nordlang.exceptions.SyntaxException;
 
 public class Array extends Type {
 
@@ -17,13 +17,13 @@ public class Array extends Type {
         return arrayType;
     }
 
-    public void setSize(int size) throws ParserException {
+    public void setSize(int size) throws SyntaxException {
         if (this.size == -1) {
             this.size = size;
             this.width = size * arrayType.width;
         } else {
             if (this.size < size) {
-                throw new ParserException("Wrong array size. Expected size: " + this.size);
+                throw new SyntaxException("Wrong array size. Expected size: " + this.size);
             }
         }
     }

@@ -4,7 +4,7 @@ import nordlang.exceptions.LangException;
 import nordlang.lexer.Lexer;
 import nordlang.machine.Machine;
 import nordlang.machine.Program;
-import nordlang.inter.Parser;
+import nordlang.syntax.Parser;
 
 import java.io.File;
 import java.io.IOException;

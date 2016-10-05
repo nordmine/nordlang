@@ -2,7 +2,7 @@ package nordlang.lexer;
 
 public class Type extends Word {
 
-    protected int width = 0;
+    protected int width = 0; // todo удалить, т.к. int лежит в основе всех примитивов
 
     public Type(String lexeme, Tag tag, int width) {
         super(tag, lexeme);

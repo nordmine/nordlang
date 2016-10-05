@@ -5,20 +5,20 @@ import nordlang.machine.MachineState;
 
 public class GetCommand extends Command {
 
-    private String name;
+    private final int nameIndex;
 
-    public GetCommand(String name) {
-        this.name = name;
+    public GetCommand(int nameIndex) {
+        this.nameIndex = nameIndex;
     }
 
     @Override
     public void execute(MachineState state) throws RunException {
-        state.getValueStack().push(state.getScope().get(name, 0));
+        state.getValueStack().push(state.getScope().get(nameIndex, 0));
         state.incrementCmdIndex();
     }
 
     @Override
     public String toString() {
-        return String.format("GET %s", name);
+        return String.format("GET %s", nameIndex);
     }
 }

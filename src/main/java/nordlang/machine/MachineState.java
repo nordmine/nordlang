@@ -6,16 +6,16 @@ import java.util.Stack;
 
 public class MachineState {
 
-    private Scope scope = new Scope(null);
+    private MachineScope scope = new MachineScope(null);
     private Stack<Integer> valueStack = new Stack<>();
     private int cmdIndex = 0;
 
-    public Scope getScope() {
+    public MachineScope getScope() {
         return scope;
     }
 
     public void pushScope() {
-        this.scope = new Scope(this.scope);
+        this.scope = new MachineScope(this.scope);
     }
 
     public void popScope() throws RunException {

@@ -1,6 +1,6 @@
 package nordlang.lexer;
 
-import nordlang.exceptions.ParserException;
+import nordlang.exceptions.SyntaxException;
 import nordlang.lexer.types.Char;
 import nordlang.lexer.types.CharArray;
 import nordlang.lexer.types.Int;
@@ -21,10 +21,6 @@ public class Lexer {
         return line;
     }
 
-    private void reserve(Word word) {
-        words.put(word.getLexeme(), word);
-    }
-
     public Lexer(String source) {
         reserve(Word.AND);
         reserve(Word.OR);
@@ -40,6 +36,10 @@ public class Lexer {
         reserve(Type.CHAR);
         reserve(Type.BOOL);
         this.source = source.toCharArray();
+    }
+
+    private void reserve(Word word) {
+        words.put(word.getLexeme(), word);
     }
 
     private boolean hasNext() {
@@ -67,7 +67,7 @@ public class Lexer {
         return hasNext() && Character.isLetterOrDigit(source[nextPosition]);
     }
 
-    public Token nextToken() throws ParserException {
+    public Token nextToken() throws SyntaxException {
         boolean skipAll = false;
         while (hasNext()) {
             nextChar();
@@ -173,7 +173,7 @@ public class Lexer {
                         nextChar();
                     }
                     if (peek != '"') {
-                        throw new ParserException(line, "unexpected end of string literal");
+                        throw new SyntaxException(line, "unexpected end of string literal");
                     }
                     return new CharArray(sb);
                 case '\'':
@@ -183,10 +183,10 @@ public class Lexer {
                         nextChar();
                         return token;
                     } else {
-                        throw new ParserException(line, "char literal contains more than 1 symbol");
+                        throw new SyntaxException(line, "char literal contains more than 1 symbol");
                     }
                 default:
-                    throw new ParserException(line, "unknown char: *" + peek + "*");
+                    throw new SyntaxException(line, "unknown char: *" + peek + "*");
             }
         }
         return new Token(Tag.END_OF_FILE);
