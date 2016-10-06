@@ -27,6 +27,6 @@ public class SetElem extends Statement {
     public void gen(Program program, int b, int a) {
         expr.gen(program);
         index.gen(program);
-        program.add(new SetElemCommand(array.getOperand().getUniqueIndex()));
+        program.add(new SetElemCommand(array.getUniqueIndex()));
     }
 }

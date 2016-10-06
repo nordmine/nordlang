@@ -2,18 +2,18 @@ package ru.nordmine.nordlang.lexer;
 
 import ru.nordmine.nordlang.exceptions.SyntaxException;
 
-public class Array extends Type {
+public class ArrayToken extends TypeToken {
 
-    private Type arrayType;
+    private TypeToken arrayType;
     private int size = -1;
 
-    public Array(int size, Type arrayType) {
+    public ArrayToken(int size, TypeToken arrayType) {
         super("[]", Tag.INDEX, size * arrayType.width);
         this.size = size;
         this.arrayType = arrayType;
     }
 
-    public Type getArrayType() {
+    public TypeToken getArrayType() {
         return arrayType;
     }
 

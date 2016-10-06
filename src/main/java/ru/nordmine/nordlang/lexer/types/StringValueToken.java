@@ -3,11 +3,11 @@ package ru.nordmine.nordlang.lexer.types;
 import ru.nordmine.nordlang.lexer.Tag;
 import ru.nordmine.nordlang.machine.Program;
 
-public class CharArray extends ValueToken {
+public class StringValueToken extends ValueToken {
 
     private final StringBuilder value;
 
-    public CharArray(StringBuilder value) {
+    public StringValueToken(StringBuilder value) {
         super(Tag.STRING);
         this.value = value;
     }

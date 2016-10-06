@@ -1,21 +1,26 @@
 package ru.nordmine.nordlang.syntax.expressions;
 
-import ru.nordmine.nordlang.lexer.Word;
+import ru.nordmine.nordlang.lexer.WordToken;
 import ru.nordmine.nordlang.machine.Program;
 import ru.nordmine.nordlang.machine.commands.GetCommand;
-import ru.nordmine.nordlang.lexer.Type;
+import ru.nordmine.nordlang.lexer.TypeToken;
 
 public class VariableExpression extends Expression {
 
-    private final int offset;
+    // виртуальная машина оперирует индексами переменных вместо имён
+    private final int uniqueIndex;
 
-    public VariableExpression(int line, Word id, Type type, int offset) {
+    public VariableExpression(int line, WordToken id, TypeToken type, int uniqueIndex) {
         super(line, id, type);
-        this.offset = offset;
+        this.uniqueIndex = uniqueIndex;
+    }
+
+    public int getUniqueIndex() {
+        return uniqueIndex;
     }
 
     @Override
     public void gen(Program program) {
-        program.add(new GetCommand(operand.getUniqueIndex()));
+        program.add(new GetCommand(uniqueIndex));
     }
 }

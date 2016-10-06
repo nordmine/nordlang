@@ -1,16 +1,16 @@
 package ru.nordmine.nordlang.lexer;
 
 import ru.nordmine.nordlang.exceptions.SyntaxException;
-import ru.nordmine.nordlang.lexer.types.Char;
-import ru.nordmine.nordlang.lexer.types.CharArray;
-import ru.nordmine.nordlang.lexer.types.Int;
+import ru.nordmine.nordlang.lexer.types.CharValueToken;
+import ru.nordmine.nordlang.lexer.types.StringValueToken;
+import ru.nordmine.nordlang.lexer.types.IntValueToken;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Lexer {
 
-    private Map<String, Word> words = new HashMap<>();
+    private Map<String, WordToken> words = new HashMap<>();
 
     private char peek = ' ';
     private int nextPosition = 0;
@@ -22,23 +22,23 @@ public class Lexer {
     }
 
     public Lexer(String source) {
-        reserve(Word.AND);
-        reserve(Word.OR);
-        reserve(new Word(Tag.IF, "if"));
-        reserve(new Word(Tag.ELSE, "else"));
-        reserve(new Word(Tag.WHILE, "while"));
-        reserve(new Word(Tag.DO, "do"));
-        reserve(new Word(Tag.BREAK, "break"));
-        reserve(Word.ECHO);
-        reserve(Word.TRUE);
-        reserve(Word.FALSE);
-        reserve(Type.INT);
-        reserve(Type.CHAR);
-        reserve(Type.BOOL);
+        reserve(WordToken.AND);
+        reserve(WordToken.OR);
+        reserve(WordToken.IF);
+        reserve(WordToken.ELSE);
+        reserve(WordToken.WHILE);
+        reserve(WordToken.DO);
+        reserve(WordToken.BREAK);
+        reserve(WordToken.ECHO);
+        reserve(WordToken.TRUE);
+        reserve(WordToken.FALSE);
+        reserve(TypeToken.INT);
+        reserve(TypeToken.CHAR);
+        reserve(TypeToken.BOOL);
         this.source = source.toCharArray();
     }
 
-    private void reserve(Word word) {
+    private void reserve(WordToken word) {
         words.put(word.getLexeme(), word);
     }
 
@@ -86,7 +86,7 @@ public class Lexer {
                     nextChar();
                     sb.append(peek);
                 }
-                return new Int(Integer.parseInt(sb.toString()));
+                return new IntValueToken(Integer.parseInt(sb.toString()));
             }
             if (Character.isLetter(peek)) {
                 StringBuilder sb = new StringBuilder();
@@ -96,11 +96,11 @@ public class Lexer {
                     sb.append(peek);
                 }
                 String s = sb.toString();
-                Word w = words.get(s);
+                WordToken w = words.get(s);
                 if (w != null) {
                     return w;
                 }
-                w = new Word(Tag.ID, s);
+                w = new WordToken(Tag.ID, s);
                 words.put(s, w);
                 return w;
             }
@@ -108,24 +108,24 @@ public class Lexer {
                 case '=':
                     if (nextIs('=')) {
                         nextChar();
-                        return Word.EQUAL;
+                        return WordToken.EQUAL;
                     } else {
                         return new Token(Tag.ASSIGN);
                     }
                 case '<':
                     if (nextIs('>')) {
                         nextChar();
-                        return Word.NOT_EQUAL;
+                        return WordToken.NOT_EQUAL;
                     } else if (nextIs('=')) {
                         nextChar();
-                        return Word.LESS_OR_EQUAL;
+                        return WordToken.LESS_OR_EQUAL;
                     } else {
                         return new Token(Tag.LESS);
                     }
                 case '>':
                     if (nextIs('=')) {
                         nextChar();
-                        return Word.GREATER_OR_EQUAL;
+                        return WordToken.GREATER_OR_EQUAL;
                     } else {
                         return new Token(Tag.GREATER);
                     }
@@ -175,11 +175,11 @@ public class Lexer {
                     if (peek != '"') {
                         throw new SyntaxException(line, "unexpected end of string literal");
                     }
-                    return new CharArray(sb);
+                    return new StringValueToken(sb);
                 case '\'':
                     nextChar();
                     if (nextIs('\'')) {
-                        Token token = new Char(peek);
+                        Token token = new CharValueToken(peek);
                         nextChar();
                         return token;
                     } else {

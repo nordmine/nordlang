@@ -14,8 +14,8 @@ public class And extends Logical {
     @Override
     public void jumping(Program program, int trueLabel, int falseLabel) {
         int label = falseLabel != 0 ? falseLabel : program.newLabel();
-        leftExpr.jumping(program, 0, label);
-        rightExpr.jumping(program, trueLabel, falseLabel);
+        left.jumping(program, 0, label);
+        right.jumping(program, trueLabel, falseLabel);
         if (falseLabel == 0) {
             program.fixLabel(label);
         }

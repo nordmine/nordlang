@@ -15,6 +15,6 @@ public class Define extends Statement {
 
     @Override
     public void gen(Program program, int b, int a) {
-        program.add(new DefineCommand(variable.getOperand().getUniqueIndex(), variable.getType().getWidth()));
+        program.add(new DefineCommand(variable.getUniqueIndex(), variable.getType().getWidth()));
     }
 }

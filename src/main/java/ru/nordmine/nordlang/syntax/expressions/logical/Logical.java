@@ -6,25 +6,26 @@ import ru.nordmine.nordlang.syntax.expressions.ExpressionUtils;
 import ru.nordmine.nordlang.lexer.Token;
 import ru.nordmine.nordlang.machine.Program;
 import ru.nordmine.nordlang.machine.commands.PushCommand;
-import ru.nordmine.nordlang.lexer.Type;
+import ru.nordmine.nordlang.lexer.TypeToken;
 
 public abstract class Logical extends Expression {
 
-    public Expression leftExpr, rightExpr;
+    protected Expression left;
+    protected Expression right;
 
-    public Logical(int line, Token token, Expression leftExpr, Expression rightExpr) throws SyntaxException {
+    public Logical(int line, Token token, Expression left, Expression right) throws SyntaxException {
         super(line, token, null);
-        this.leftExpr = leftExpr;
-        this.rightExpr = rightExpr;
-        type = check(leftExpr.getType(), rightExpr.getType());
+        this.left = left;
+        this.right = right;
+        type = check(left.getType(), right.getType());
         if (type == null) {
-            ExpressionUtils.typeError(getLine(), leftExpr.getType(), rightExpr.getType());
+            ExpressionUtils.typeError(getLine(), left.getType(), right.getType());
         }
     }
 
-    public Type check(Type type1, Type type2) {
-        if (type1 == Type.BOOL && type2 == Type.BOOL) {
-            return Type.BOOL;
+    protected TypeToken check(TypeToken type1, TypeToken type2) {
+        if (type1 == TypeToken.BOOL && type2 == TypeToken.BOOL) {
+            return TypeToken.BOOL;
         } else {
             return null;
         }
@@ -44,6 +45,6 @@ public abstract class Logical extends Expression {
 
     @Override
     public String toString() {
-        return leftExpr.toString() + " " + operand.toString() + " " + rightExpr.toString();
+        return left.toString() + " " + operand.toString() + " " + right.toString();
     }
 }

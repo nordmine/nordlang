@@ -23,6 +23,6 @@ public class Set extends Statement {
     @Override
     public void gen(Program program, int b, int a) {
         expr.gen(program);
-        program.add(new SetCommand(variable.getOperand().getUniqueIndex()));
+        program.add(new SetCommand(variable.getUniqueIndex()));
     }
 }

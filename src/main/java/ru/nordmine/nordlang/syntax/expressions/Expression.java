@@ -1,17 +1,17 @@
 package ru.nordmine.nordlang.syntax.expressions;
 
 import ru.nordmine.nordlang.lexer.Token;
-import ru.nordmine.nordlang.lexer.Type;
+import ru.nordmine.nordlang.lexer.TypeToken;
 import ru.nordmine.nordlang.machine.Program;
 
 public abstract class Expression {
 
     protected Token operand;
-    protected Type type;
+    protected TypeToken type;
 
     private final int line;
 
-    public Expression(int line, Token operand, Type type) {
+    public Expression(int line, Token operand, TypeToken type) {
         this.line = line;
         this.operand = operand;
         this.type = type;
@@ -38,7 +38,7 @@ public abstract class Expression {
         }
     }
 
-    public Type getType() {
+    public TypeToken getType() {
         return type;
     }
 

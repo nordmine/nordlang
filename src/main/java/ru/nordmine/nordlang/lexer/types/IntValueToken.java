@@ -3,18 +3,23 @@ package ru.nordmine.nordlang.lexer.types;
 import ru.nordmine.nordlang.lexer.Tag;
 import ru.nordmine.nordlang.machine.Program;
 
-public class Char extends ValueToken {
+public class IntValueToken extends ValueToken {
 
-    private final char value;
+    private final int value;
 
-    public Char(char value) {
-        super(Tag.CHAR);
+    public IntValueToken(int value) {
+        super(Tag.INT);
         this.value = value;
     }
 
     @Override
     public String toString() {
-        return String.format("'%s'", value);
+        return Integer.toString(value);
+    }
+
+
+    public int getIntValue() {
+        return value;
     }
 
     @Override

@@ -3,18 +3,18 @@ package ru.nordmine.nordlang.syntax.expressions.operators;
 import ru.nordmine.nordlang.syntax.expressions.Expression;
 import ru.nordmine.nordlang.syntax.expressions.VariableExpression;
 import ru.nordmine.nordlang.lexer.Tag;
-import ru.nordmine.nordlang.lexer.Word;
+import ru.nordmine.nordlang.lexer.WordToken;
 import ru.nordmine.nordlang.machine.Program;
 import ru.nordmine.nordlang.machine.commands.AccessCommand;
-import ru.nordmine.nordlang.lexer.Type;
+import ru.nordmine.nordlang.lexer.TypeToken;
 
 public class Access extends Expression {
 
     private VariableExpression array;
     private Expression index;
 
-    public Access(int line, VariableExpression array, Expression index, Type type) {
-        super(line, new Word(Tag.INDEX, "[]"), type);
+    public Access(int line, VariableExpression array, Expression index, TypeToken type) {
+        super(line, new WordToken(Tag.INDEX, "[]"), type);
         this.array = array;
         this.index = index;
     }
@@ -30,7 +30,7 @@ public class Access extends Expression {
     @Override
     public void gen(Program program) {
         index.gen(program);
-        program.add(new AccessCommand(array.getOperand().getUniqueIndex()));
+        program.add(new AccessCommand(array.getUniqueIndex()));
     }
 
     @Override

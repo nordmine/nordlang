@@ -8,6 +8,8 @@ import java.util.Map;
 
 public class ParserScope {
 
+    private static int uniqueIndexSequence = 2000;
+
     private Map<Token, VariableExpression> table;
     private ParserScope prev;
 
@@ -16,8 +18,13 @@ public class ParserScope {
         prev = parserScope;
     }
 
+    public int getUniqueIndexSequence() {
+        return uniqueIndexSequence;
+    }
+
     public void put(Token token, VariableExpression variable) {
         table.put(token, variable);
+        uniqueIndexSequence++;
     }
 
     public VariableExpression get(Token token) {
