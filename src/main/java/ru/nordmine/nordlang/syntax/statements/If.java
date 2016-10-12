@@ -1,6 +1,7 @@
 package ru.nordmine.nordlang.syntax.statements;
 
-import ru.nordmine.nordlang.exceptions.SyntaxException;
+import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
+import ru.nordmine.nordlang.syntax.ParserUtils;
 import ru.nordmine.nordlang.syntax.expressions.Expression;
 import ru.nordmine.nordlang.machine.Program;
 import ru.nordmine.nordlang.lexer.TypeToken;
@@ -15,7 +16,7 @@ public class If extends Statement {
         this.expr = expr;
         this.statement = statement;
         if (expr.getType() != TypeToken.BOOL) {
-            StatementUtils.throwError(getLine(), "boolean value required in if");
+            ParserUtils.throwError(getLine(), "boolean value required in if");
         }
     }
 

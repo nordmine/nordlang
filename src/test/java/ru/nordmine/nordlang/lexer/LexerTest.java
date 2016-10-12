@@ -1,6 +1,6 @@
 package ru.nordmine.nordlang.lexer;
 
-import ru.nordmine.nordlang.exceptions.SyntaxException;
+import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

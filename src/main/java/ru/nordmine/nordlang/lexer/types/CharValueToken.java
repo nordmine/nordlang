@@ -2,6 +2,7 @@ package ru.nordmine.nordlang.lexer.types;
 
 import ru.nordmine.nordlang.lexer.Tag;
 import ru.nordmine.nordlang.machine.Program;
+import ru.nordmine.nordlang.machine.value.CharValue;
 
 public class CharValueToken extends ValueToken {
 
@@ -19,6 +20,6 @@ public class CharValueToken extends ValueToken {
 
     @Override
     public void gen(Program program) {
-        program.addPushCommand(value);
+        program.addPushCommand(new CharValue(value));
     }
 }

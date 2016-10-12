@@ -1,6 +1,6 @@
 package ru.nordmine.nordlang.machine;
 
-import ru.nordmine.nordlang.exceptions.RunException;
+import ru.nordmine.nordlang.machine.exceptions.RunException;
 import ru.nordmine.nordlang.machine.commands.Command;
 
 import java.util.List;

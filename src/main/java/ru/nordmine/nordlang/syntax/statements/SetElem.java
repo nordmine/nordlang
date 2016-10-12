@@ -1,6 +1,7 @@
 package ru.nordmine.nordlang.syntax.statements;
 
-import ru.nordmine.nordlang.exceptions.SyntaxException;
+import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
+import ru.nordmine.nordlang.syntax.ParserUtils;
 import ru.nordmine.nordlang.syntax.expressions.operators.Access;
 import ru.nordmine.nordlang.syntax.expressions.Expression;
 import ru.nordmine.nordlang.syntax.expressions.VariableExpression;
@@ -18,8 +19,8 @@ public class SetElem extends Statement {
         this.array = x.getArray();
         this.index = x.getIndex();
         this.expr = expr;
-        if (StatementUtils.checkTypes(x.getType(), expr.getType()) == null) {
-            StatementUtils.typeError(getLine(), x.getType(), expr.getType());
+        if (ParserUtils.checkTypes(x.getType(), expr.getType()) == null) {
+            ParserUtils.typeError(getLine(), x.getType(), expr.getType());
         }
     }
 

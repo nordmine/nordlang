@@ -1,6 +1,6 @@
 package ru.nordmine.nordlang.machine.commands;
 
-import ru.nordmine.nordlang.exceptions.RunException;
+import ru.nordmine.nordlang.machine.exceptions.RunException;
 import ru.nordmine.nordlang.machine.MachineState;
 
 public class SetCommand extends Command {
@@ -13,7 +13,7 @@ public class SetCommand extends Command {
 
     @Override
     public void execute(MachineState state) throws RunException {
-        state.getScope().set(nameIndex, 0, state.getValueStack().pop());
+        state.getScope().set(nameIndex, state.getValueStack().pop());
         state.incrementCmdIndex();
     }
 

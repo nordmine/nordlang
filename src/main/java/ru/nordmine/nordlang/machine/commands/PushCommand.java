@@ -1,13 +1,14 @@
 package ru.nordmine.nordlang.machine.commands;
 
-import ru.nordmine.nordlang.exceptions.RunException;
+import ru.nordmine.nordlang.machine.exceptions.RunException;
 import ru.nordmine.nordlang.machine.MachineState;
+import ru.nordmine.nordlang.machine.value.Value;
 
 public class PushCommand extends Command {
 
-    private int value;
+    private final Value value;
 
-    public PushCommand(int value) {
+    public PushCommand(Value value) {
         this.value = value;
     }
 

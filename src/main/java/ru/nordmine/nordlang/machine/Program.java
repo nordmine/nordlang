@@ -1,6 +1,7 @@
 package ru.nordmine.nordlang.machine;
 
 import ru.nordmine.nordlang.machine.commands.*;
+import ru.nordmine.nordlang.machine.value.Value;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public class Program {
         commands.add(new GotoCommand(labelMap.get(labelIndex)));
     }
 
-    public void addPushCommand(int value) {
+    public void addPushCommand(Value value) {
         commands.add(new PushCommand(value));
     }
 

@@ -1,7 +1,8 @@
 package ru.nordmine.nordlang.machine.commands;
 
-import ru.nordmine.nordlang.exceptions.RunException;
+import ru.nordmine.nordlang.machine.exceptions.RunException;
 import ru.nordmine.nordlang.machine.MachineState;
+import ru.nordmine.nordlang.machine.value.Value;
 
 public class AccessCommand extends Command {
 
@@ -13,8 +14,8 @@ public class AccessCommand extends Command {
 
     @Override
     public void execute(MachineState state) throws RunException {
-        int offset = state.getValueStack().pop();
-        state.getValueStack().push(state.getScope().get(nameIndex, offset));
+        Value value = state.getValueStack().pop();
+        state.getValueStack().push(state.getScope().get(nameIndex).getByIndex(value));
         state.incrementCmdIndex();
     }
 

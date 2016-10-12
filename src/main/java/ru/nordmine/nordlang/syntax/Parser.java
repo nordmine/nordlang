@@ -1,8 +1,10 @@
 package ru.nordmine.nordlang.syntax;
 
-import ru.nordmine.nordlang.exceptions.SyntaxException;
 import ru.nordmine.nordlang.lexer.*;
-import ru.nordmine.nordlang.syntax.expressions.Constant;
+import ru.nordmine.nordlang.machine.Program;
+import ru.nordmine.nordlang.machine.value.Value;
+import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
+import ru.nordmine.nordlang.syntax.expressions.ConstantExpression;
 import ru.nordmine.nordlang.syntax.expressions.Expression;
 import ru.nordmine.nordlang.syntax.expressions.VariableExpression;
 import ru.nordmine.nordlang.syntax.expressions.logical.And;
@@ -12,9 +14,6 @@ import ru.nordmine.nordlang.syntax.expressions.logical.Rel;
 import ru.nordmine.nordlang.syntax.expressions.operators.Access;
 import ru.nordmine.nordlang.syntax.expressions.operators.BinaryOperator;
 import ru.nordmine.nordlang.syntax.expressions.operators.UnaryOperator;
-import ru.nordmine.nordlang.lexer.types.CharValueToken;
-import ru.nordmine.nordlang.lexer.types.StringValueToken;
-import ru.nordmine.nordlang.machine.Program;
 import ru.nordmine.nordlang.syntax.statements.*;
 
 public class Parser {
@@ -138,44 +137,37 @@ public class Parser {
 
     private Statement definition() throws SyntaxException {
         TypeToken t = type();
-        WordToken variableToken = (WordToken)look;
+        WordToken variableToken = (WordToken) look;
         match(Tag.ID);
         VariableExpression variable = new VariableExpression(line, variableToken, t, top.getUniqueIndexSequence());
         top.put(variableToken, variable);
-        Define define = new Define(line, variable);
 
         Statement statement = Statement.Empty;
         match(Tag.ASSIGN);
         if (look.getTag() == Tag.OPEN_SQUARE) {
             // объявление массива через квадратные скобки
-            statement = arrayDefinition((ArrayToken) t, variable, statement, 0);
-        } else if (look.getTag() == Tag.STRING) {
-            // объявление строкового массива через кавычки
-            statement = stringDefinition((ArrayToken) t, variable, statement);
+            statement = arrayDefinition((ArrayToken) t, variable, statement);
         } else {
-            statement = new Set(line, variable, bool());
+            Value initialValue = ParserUtils.getInitialValueByToken(t);
+            Define define = new Define(line, variable, initialValue);
+            statement = new Seq(line, define, new Set(line, variable, bool()));
         }
         match(Tag.SEMICOLON);
 
-        return new Seq(line, define, statement);
+        return statement;
     }
 
-    private Statement arrayDefinition(ArrayToken t, VariableExpression variable, Statement statement, int outer) throws SyntaxException {
+    private Statement arrayDefinition(ArrayToken t, VariableExpression variable, Statement statement) throws SyntaxException {
         move();
         int inner = 0;
         while (look.getTag() != Tag.CLOSE_SQUARE) { // одна итерация - один элемент массива
-            if (look.getTag() == Tag.OPEN_SQUARE) {
-                statement = arrayDefinition((ArrayToken) t.getArrayType(), variable, statement, inner);
-            } else {
-                // todo при инициализации массиву присваивается указатель на константу
-                Expression indexExpr = new Constant(line, outer * t.getWidth() + inner);
-                TypeToken type = t.getArrayType();
-                Expression widthExpr = new Constant(line, type.getWidth());
-                Expression loc = new BinaryOperator(line, new Token(Tag.MUL), indexExpr, widthExpr);
-                Access x = new Access(line, variable, loc, type);
-                statement = new Seq(line, statement, new SetElem(line, x, bool()));
-                // todo поместить константы в память
-            }
+            //Expression indexExpr = new ConstantExpression(line, outer * t.getWidth() + inner);
+            TypeToken type = t.getArrayType();
+
+            //Expression widthExpr = new ConstantExpression(line, type.getWidth());
+            //Expression loc = new BinaryOperator(line, new Token(Tag.MUL), indexExpr, widthExpr);
+            Access x = new Access(line, variable, new ConstantExpression(line, inner), type);
+            statement = new Seq(line, statement, new SetElem(line, x, bool()));
             inner++;
             if (look.getTag() != Tag.COMMA) {
                 break;
@@ -183,27 +175,14 @@ public class Parser {
             match(Tag.COMMA);
         }
         match(Tag.CLOSE_SQUARE);
-        t.setSize(inner);
-        return statement;
-    }
-
-    private Statement stringDefinition(ArrayToken t, VariableExpression variable, Statement statement) throws SyntaxException {
-        StringBuilder sb = ((StringValueToken)look).getValue();
-        move();
-        for (int i = 0; i < sb.length(); i++) {
-            Expression indexExpr = new Constant(line, i);
-            TypeToken type = t.getArrayType();
-            Expression widthExpr = new Constant(line, type.getWidth());
-            Expression loc = new BinaryOperator(line, new Token(Tag.MUL), indexExpr, widthExpr);
-            Access x = new Access(line, variable, loc, type);
-            statement = new Seq(line, statement, new SetElem(line, x, new Constant(line, new CharValueToken(sb.charAt(i)), TypeToken.CHAR)));
-        }
-        t.setSize(sb.length());
+        Value initialValue = ParserUtils.getInitialValueByToken(t.getArrayType());
+        DefineArray defineArray = new DefineArray(line, variable, inner, initialValue);
+        statement = new Seq(line, defineArray, statement);
         return statement;
     }
 
     private TypeToken type() throws SyntaxException {
-        TypeToken t = (TypeToken)look;
+        TypeToken t = (TypeToken) look;
         match(Tag.BASIC);
         if (look.getTag() != Tag.OPEN_SQUARE) {
             return t;
@@ -218,7 +197,7 @@ public class Parser {
         if (look.getTag() == Tag.OPEN_SQUARE) {
             t = dimension(t);
         }
-        return new ArrayToken(-1, t);
+        return new ArrayToken(t);
     }
 
     private Statement assign() throws SyntaxException {
@@ -328,32 +307,31 @@ public class Parser {
                 x = bool();
                 match(Tag.CLOSE_BRACKET);
                 return x;
-            case INT:
-                x = new Constant(line, look, TypeToken.INT);
-                move();
-                return x;
-            case CHAR:
-                x = new Constant(line, look, TypeToken.CHAR);
-                move();
-                return x;
             case TRUE:
-                x = Constant.TRUE;
+                x = ConstantExpression.TRUE;
                 move();
                 return x;
             case FALSE:
-                x = Constant.FALSE;
+                x = ConstantExpression.FALSE;
+                move();
+                return x;
+            case INT:
+                x = new ConstantExpression(line, look, TypeToken.INT);
+                move();
+                return x;
+            case CHAR:
+                x = new ConstantExpression(line, look, TypeToken.CHAR);
                 move();
                 return x;
             case STRING:
-                StringValueToken charArray = (StringValueToken) look;
-                x = new Constant(line, look, new ArrayToken(charArray.getValue().length(), TypeToken.CHAR));
+                x = new ConstantExpression(line, look, TypeToken.STRING);
                 move();
                 return x;
             default:
                 error("unexpected token: " + look);
                 return x;
             case ID:
-                WordToken variableToken = (WordToken)look;
+                WordToken variableToken = (WordToken) look;
                 VariableExpression variable = top.get(variableToken);
                 if (variable == null) {
                     error(String.format("variable '%s' is not defined", look.toString()));
@@ -368,25 +346,19 @@ public class Parser {
     }
 
     private Access offset(VariableExpression a) throws SyntaxException {
+        // todo избавиться от костылей для строки
         TypeToken type = a.getType();
+        if (type != TypeToken.STRING && type.getTag() == Tag.BASIC) {
+            throw new SyntaxException(line, "array type expected");
+        }
         match(Tag.OPEN_SQUARE);
         Expression indexExpr = bool();
         match(Tag.CLOSE_SQUARE);
-        type = ((ArrayToken)type).getArrayType();
-        Expression widthExpr = new Constant(line, type.getWidth());
-        Expression t1 = new BinaryOperator(line, new Token(Tag.MUL), indexExpr, widthExpr);
-        Expression loc = t1;
-        while (look.getTag() == Tag.OPEN_SQUARE) {
-            match(Tag.OPEN_SQUARE);
-            indexExpr = bool();
-            match(Tag.CLOSE_SQUARE);
-            type = ((ArrayToken)type).getArrayType();
-            widthExpr = new Constant(line, type.getWidth());
-            t1 = new BinaryOperator(line, new Token(Tag.MUL), indexExpr, widthExpr);
-            // todo получение элемента по индексу в многомерных массивах через последовательные offset из памяти в стек
-            Expression t2 = new BinaryOperator(line, new Token(Tag.PLUS), loc, t1);
-            loc = t2;
+        if (type == TypeToken.STRING) {
+            return new Access(line, a, indexExpr, TypeToken.CHAR);
+        } else {
+            type = ((ArrayToken) type).getArrayType();
+            return new Access(line, a, indexExpr, type);
         }
-        return new Access(line, a, loc, type);
     }
 }

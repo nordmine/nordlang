@@ -1,8 +1,8 @@
 package ru.nordmine.nordlang.syntax.expressions.operators;
 
-import ru.nordmine.nordlang.exceptions.SyntaxException;
+import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
+import ru.nordmine.nordlang.syntax.ParserUtils;
 import ru.nordmine.nordlang.syntax.expressions.Expression;
-import ru.nordmine.nordlang.syntax.expressions.ExpressionUtils;
 import ru.nordmine.nordlang.lexer.Tag;
 import ru.nordmine.nordlang.lexer.Token;
 import ru.nordmine.nordlang.machine.Program;
@@ -17,7 +17,7 @@ public class UnaryOperator extends Expression {
         super(line, token, null);
         expr = x;
         if (expr.getType() != TypeToken.INT) {
-            ExpressionUtils.typeError(getLine(), TypeToken.INT, expr.getType());
+            ParserUtils.typeError(getLine(), TypeToken.INT, expr.getType());
         }
         this.type = this.expr.getType();
     }

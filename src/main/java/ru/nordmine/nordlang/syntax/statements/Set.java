@@ -1,6 +1,7 @@
 package ru.nordmine.nordlang.syntax.statements;
 
-import ru.nordmine.nordlang.exceptions.SyntaxException;
+import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
+import ru.nordmine.nordlang.syntax.ParserUtils;
 import ru.nordmine.nordlang.syntax.expressions.Expression;
 import ru.nordmine.nordlang.syntax.expressions.VariableExpression;
 import ru.nordmine.nordlang.machine.Program;
@@ -15,8 +16,8 @@ public class Set extends Statement {
         super(line);
         this.variable = variable;
         this.expr = expr;
-        if (StatementUtils.checkTypes(variable.getType(), expr.getType()) == null) {
-            StatementUtils.typeError(getLine(), variable.getType(), expr.getType());
+        if (ParserUtils.checkTypes(variable.getType(), expr.getType()) == null) {
+            ParserUtils.typeError(getLine(), variable.getType(), expr.getType());
         }
     }
 

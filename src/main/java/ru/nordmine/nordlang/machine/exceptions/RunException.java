@@ -1,4 +1,6 @@
-package ru.nordmine.nordlang.exceptions;
+package ru.nordmine.nordlang.machine.exceptions;
+
+import ru.nordmine.nordlang.exceptions.LangException;
 
 public class RunException extends LangException {
 

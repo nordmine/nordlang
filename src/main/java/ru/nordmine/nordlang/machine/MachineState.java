@@ -1,13 +1,14 @@
 package ru.nordmine.nordlang.machine;
 
-import ru.nordmine.nordlang.exceptions.RunException;
+import ru.nordmine.nordlang.machine.exceptions.RunException;
+import ru.nordmine.nordlang.machine.value.Value;
 
 import java.util.Stack;
 
 public class MachineState {
 
     private MachineScope scope = new MachineScope(null);
-    private Stack<Integer> valueStack = new Stack<>();
+    private Stack<Value> valueStack = new Stack<>();
     private int cmdIndex = 0;
 
     public MachineScope getScope() {
@@ -25,7 +26,7 @@ public class MachineState {
         this.scope = this.scope.getParent();
     }
 
-    public Stack<Integer> getValueStack() {
+    public Stack<Value> getValueStack() {
         return valueStack;
     }
 

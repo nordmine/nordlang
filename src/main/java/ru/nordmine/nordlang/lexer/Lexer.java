@@ -1,6 +1,6 @@
 package ru.nordmine.nordlang.lexer;
 
-import ru.nordmine.nordlang.exceptions.SyntaxException;
+import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 import ru.nordmine.nordlang.lexer.types.CharValueToken;
 import ru.nordmine.nordlang.lexer.types.StringValueToken;
 import ru.nordmine.nordlang.lexer.types.IntValueToken;
@@ -32,9 +32,10 @@ public class Lexer {
         reserve(WordToken.ECHO);
         reserve(WordToken.TRUE);
         reserve(WordToken.FALSE);
+        reserve(TypeToken.BOOL);
         reserve(TypeToken.INT);
         reserve(TypeToken.CHAR);
-        reserve(TypeToken.BOOL);
+        reserve(TypeToken.STRING);
         this.source = source.toCharArray();
     }
 

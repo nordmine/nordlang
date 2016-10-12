@@ -1,4 +1,6 @@
-package ru.nordmine.nordlang.exceptions;
+package ru.nordmine.nordlang.syntax.exceptions;
+
+import ru.nordmine.nordlang.exceptions.LangException;
 
 public class SyntaxException extends LangException {
 

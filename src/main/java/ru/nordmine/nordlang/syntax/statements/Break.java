@@ -1,7 +1,8 @@
 package ru.nordmine.nordlang.syntax.statements;
 
-import ru.nordmine.nordlang.exceptions.SyntaxException;
+import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 import ru.nordmine.nordlang.machine.Program;
+import ru.nordmine.nordlang.syntax.ParserUtils;
 
 public class Break extends Statement {
 
@@ -10,7 +11,7 @@ public class Break extends Statement {
     public Break(int line) throws SyntaxException {
         super(line);
         if (Enclosing == null) {
-            StatementUtils.throwError(getLine(), "unenclosed break");
+            ParserUtils.throwError(getLine(), "unenclosed break");
         }
         this.statement = Enclosing;
     }

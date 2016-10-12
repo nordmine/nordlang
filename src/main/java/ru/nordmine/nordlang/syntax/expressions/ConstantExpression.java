@@ -6,19 +6,20 @@ import ru.nordmine.nordlang.lexer.types.ValueToken;
 import ru.nordmine.nordlang.lexer.WordToken;
 import ru.nordmine.nordlang.machine.Program;
 import ru.nordmine.nordlang.lexer.TypeToken;
+import ru.nordmine.nordlang.machine.value.BoolValue;
 
-public class Constant extends Expression {
+public class ConstantExpression extends Expression {
 
-    public Constant(int line, Token token, TypeToken type) {
+    public ConstantExpression(int line, Token token, TypeToken type) {
         super(line, token, type);
     }
 
-    public Constant(int line, int i) {
+    public ConstantExpression(int line, int i) {
         super(line, new IntValueToken(i), TypeToken.INT);
     }
 
-    public static final Constant TRUE = new Constant(0, WordToken.TRUE, TypeToken.BOOL);
-    public static final Constant FALSE = new Constant(0, WordToken.FALSE, TypeToken.BOOL);
+    public static final ConstantExpression TRUE = new ConstantExpression(0, WordToken.TRUE, TypeToken.BOOL);
+    public static final ConstantExpression FALSE = new ConstantExpression(0, WordToken.FALSE, TypeToken.BOOL);
 
     @Override
     public void jumping(Program program, int trueLabel, int falseLabel) {
@@ -31,12 +32,12 @@ public class Constant extends Expression {
 
     @Override
     public void gen(Program program) {
-        if (type == TypeToken.INT || type == TypeToken.CHAR) {
+        if (type == TypeToken.INT || type == TypeToken.CHAR || type == TypeToken.STRING) {
             ((ValueToken)operand).gen(program);
         } else if (this == TRUE) {
-            program.addPushCommand(1);
+            program.addPushCommand(BoolValue.TRUE);
         } else if (this == FALSE) {
-            program.addPushCommand(0);
+            program.addPushCommand(BoolValue.FALSE);
         }
     }
 

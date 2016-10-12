@@ -2,6 +2,7 @@ package ru.nordmine.nordlang.lexer.types;
 
 import ru.nordmine.nordlang.lexer.Tag;
 import ru.nordmine.nordlang.machine.Program;
+import ru.nordmine.nordlang.machine.value.IntValue;
 
 public class IntValueToken extends ValueToken {
 
@@ -17,13 +18,8 @@ public class IntValueToken extends ValueToken {
         return Integer.toString(value);
     }
 
-
-    public int getIntValue() {
-        return value;
-    }
-
     @Override
     public void gen(Program program) {
-        program.addPushCommand(value);
+        program.addPushCommand(new IntValue(value));
     }
 }

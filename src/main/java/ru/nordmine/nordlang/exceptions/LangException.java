@@ -1,6 +1,6 @@
 package ru.nordmine.nordlang.exceptions;
 
-public class LangException extends Exception { // todo распихать исключения по соотв. пакетам
+public class LangException extends Exception {
 
     public LangException(String message) {
         super(message);

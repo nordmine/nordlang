@@ -1,16 +1,15 @@
 package ru.nordmine.nordlang.machine;
 
-import ru.nordmine.nordlang.exceptions.RunException;
+import ru.nordmine.nordlang.machine.exceptions.RunException;
+import ru.nordmine.nordlang.machine.value.Value;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MachineScope {
 
     private MachineScope parent;
-    private Map<Integer, List<Integer>> values;
+    private Map<Integer, Value> values;
 
     public MachineScope(MachineScope parent) {
         this.parent = parent;
@@ -21,46 +20,39 @@ public class MachineScope {
         return parent;
     }
 
-    public void defineInCurrentScope(int nameIndex, int width) throws RunException {
-        if (values.containsKey(nameIndex)) {
+    public void defineInCurrentScope(int nameIndex, Value value) throws RunException {
+        MachineScope scope = getScopeByNameIndex(nameIndex);
+        if (scope != null) {
             throw new RunException("variable already defined in current scope");
         }
-        List<Integer> initialValue = new ArrayList<>(width);
-        for (int i = 0; i < width; i++) {
-            initialValue.add(0);
-        }
-        values.put(nameIndex, initialValue);
+        values.put(nameIndex, value);
     }
 
-    public void set(int nameIndex, int offset, int val) throws RunException {
-        List<Integer> value = getValue(nameIndex);
-        if (offset >= 0 && offset < value.size()) {
-            value.set(offset, val);
+    public void set(int nameIndex, Value newValue) throws RunException {
+        MachineScope scope = getScopeByNameIndex(nameIndex);
+        if (scope == null) {
+            throw new RunException("variable is not defined");
         } else {
-            throw new RunException("Out of bound offset");
+            scope.values.put(nameIndex, newValue);
         }
     }
 
-    public int get(int nameIndex, int offset) throws RunException {
-        List<Integer> value = getValue(nameIndex);
-        if (offset >= 0 && offset < value.size()) {
-            return value.get(offset);
+    public Value get(int nameIndex) throws RunException {
+        MachineScope scope = getScopeByNameIndex(nameIndex);
+        if (scope == null) {
+            throw new RunException("variable is not defined");
         } else {
-            throw new RunException("Out of bound offset");
+            return scope.values.get(nameIndex);
         }
     }
 
-    public int sizeOf(int nameIndex) throws RunException {
-        return getValue(nameIndex).size();
-    }
-
-    private List<Integer> getValue(int nameIndex) throws RunException {
+    private MachineScope getScopeByNameIndex(int nameIndex) {
         for (MachineScope scope = this; scope != null; scope = scope.parent) {
-            List<Integer> found = scope.values.get(nameIndex);
+            Value found = scope.values.get(nameIndex);
             if (found != null) {
-                return found;
+                return scope;
             }
         }
-        throw new RunException("variable is not defined");
+        return null;
     }
 }

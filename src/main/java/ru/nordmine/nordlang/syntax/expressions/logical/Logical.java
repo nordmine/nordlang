@@ -1,12 +1,12 @@
 package ru.nordmine.nordlang.syntax.expressions.logical;
 
-import ru.nordmine.nordlang.exceptions.SyntaxException;
-import ru.nordmine.nordlang.syntax.expressions.Expression;
-import ru.nordmine.nordlang.syntax.expressions.ExpressionUtils;
+import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 import ru.nordmine.nordlang.lexer.Token;
-import ru.nordmine.nordlang.machine.Program;
-import ru.nordmine.nordlang.machine.commands.PushCommand;
 import ru.nordmine.nordlang.lexer.TypeToken;
+import ru.nordmine.nordlang.machine.Program;
+import ru.nordmine.nordlang.machine.value.BoolValue;
+import ru.nordmine.nordlang.syntax.ParserUtils;
+import ru.nordmine.nordlang.syntax.expressions.Expression;
 
 public abstract class Logical extends Expression {
 
@@ -19,7 +19,7 @@ public abstract class Logical extends Expression {
         this.right = right;
         type = check(left.getType(), right.getType());
         if (type == null) {
-            ExpressionUtils.typeError(getLine(), left.getType(), right.getType());
+            ParserUtils.typeError(getLine(), left.getType(), right.getType());
         }
     }
 
@@ -36,10 +36,10 @@ public abstract class Logical extends Expression {
         int f = program.newLabel();
         int a = program.newLabel();
         this.jumping(program, 0, f);
-        program.add(new PushCommand(1));
+        program.addPushCommand(BoolValue.TRUE);
         program.addGotoCommand(a);
         program.fixLabel(f);
-        program.add(new PushCommand(0));
+        program.addPushCommand(BoolValue.FALSE);
         program.fixLabel(a);
     }
 

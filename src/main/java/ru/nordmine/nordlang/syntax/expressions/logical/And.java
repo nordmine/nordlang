@@ -1,6 +1,6 @@
 package ru.nordmine.nordlang.syntax.expressions.logical;
 
-import ru.nordmine.nordlang.exceptions.SyntaxException;
+import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 import ru.nordmine.nordlang.syntax.expressions.Expression;
 import ru.nordmine.nordlang.lexer.Token;
 import ru.nordmine.nordlang.machine.Program;

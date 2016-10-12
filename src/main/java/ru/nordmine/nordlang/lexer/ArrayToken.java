@@ -1,15 +1,11 @@
 package ru.nordmine.nordlang.lexer;
 
-import ru.nordmine.nordlang.exceptions.SyntaxException;
-
 public class ArrayToken extends TypeToken {
 
-    private TypeToken arrayType;
-    private int size = -1;
+    private final TypeToken arrayType;
 
-    public ArrayToken(int size, TypeToken arrayType) {
-        super("[]", Tag.INDEX, size * arrayType.width);
-        this.size = size;
+    public ArrayToken(TypeToken arrayType) {
+        super("[]", Tag.INDEX);
         this.arrayType = arrayType;
     }
 
@@ -17,19 +13,8 @@ public class ArrayToken extends TypeToken {
         return arrayType;
     }
 
-    public void setSize(int size) throws SyntaxException {
-        if (this.size == -1) {
-            this.size = size;
-            this.width = size * arrayType.width;
-        } else {
-            if (this.size < size) {
-                throw new SyntaxException("Wrong array size. Expected size: " + this.size);
-            }
-        }
-    }
-
     @Override
     public String toString() {
-        return "[" + size + "] " + arrayType.toString();
+        return arrayType.toString() + "[]";
     }
 }

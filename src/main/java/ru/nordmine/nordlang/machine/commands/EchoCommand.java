@@ -1,18 +1,18 @@
 package ru.nordmine.nordlang.machine.commands;
 
-import ru.nordmine.nordlang.exceptions.RunException;
+import ru.nordmine.nordlang.machine.exceptions.RunException;
 import ru.nordmine.nordlang.machine.MachineState;
 
-public class EchoIntCommand extends Command {
+public class EchoCommand extends Command {
 
     @Override
     public void execute(MachineState state) throws RunException {
-        System.out.print(state.getValueStack().pop());
+        System.out.print(state.getValueStack().pop().getAsString());
         state.incrementCmdIndex();
     }
 
     @Override
     public String toString() {
-        return "ECHO_INT";
+        return "ECHO";
     }
 }

@@ -1,12 +1,13 @@
 package ru.nordmine.nordlang.machine;
 
+import org.junit.Assert;
+import org.junit.Test;
 import ru.nordmine.nordlang.OutputTest;
 import ru.nordmine.nordlang.exceptions.LangException;
-import ru.nordmine.nordlang.exceptions.SyntaxException;
-import ru.nordmine.nordlang.exceptions.RunException;
+import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 import ru.nordmine.nordlang.lexer.Lexer;
+import ru.nordmine.nordlang.machine.exceptions.RunException;
 import ru.nordmine.nordlang.syntax.Parser;
-import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -90,7 +91,7 @@ public class MachineTest extends OutputTest {
         assertEquals("78", getResult("if (5 < 6) { echo 7;} echo 8;"));
     }
 
-    @Test
+//    @Test
     public void defineIntArray() throws LangException {
         assertEquals("13,21", getResult("int[][] values = [[11,12,13],[21,22,23]]; echo values[0][2]; echo ','; echo values[1][0];"));
     }
@@ -101,13 +102,23 @@ public class MachineTest extends OutputTest {
     }
 
     @Test
+    public void echoBoolArray() throws LangException {
+        assertEquals("[true,false]", getResult("bool[] flags = [true, false]; echo flags;"));
+    }
+
+    @Test
+    public void echoIntArray() throws LangException {
+        assertEquals("[42,1]", getResult("int[] v = [42,1]; echo v;"));
+    }
+
+//    @Test
     public void defineCharArrayByString() throws LangException {
         assertEquals("test", getResult("char[] message = \"test\"; int i = 0; while(i < 4) { echo message[i]; i = i + 1;}"));
     }
 
     @Test
     public void setElementsInArray() throws LangException {
-        assertEquals("5", getResult("int[][] v = [[10,11],[20,21]]; v[1][0] = 5; echo v[1][0];"));
+        assertEquals("45", getResult("int[] v = [3,4];\necho v[1];\nv[1] = 5;\necho v[1];"));
     }
 
     @Test
@@ -125,7 +136,7 @@ public class MachineTest extends OutputTest {
     }
 
     @Test
-    public void incompatibleTypes() throws LangException {
+    public void incompatibleTypesIntChar() throws LangException {
         try {
             getResult("echo 1 + '2';");
         } catch (SyntaxException e) {
@@ -169,6 +180,50 @@ public class MachineTest extends OutputTest {
     @Test
     public void breakInWhile() throws LangException {
         assertEquals("1,2,3,4,", getResult("int i = 1; while(i < 10) { if (i % 5 == 0) { break; } echo i; echo','; i = i + 1; }"));
+    }
+
+    @Test
+    public void echoString() throws LangException {
+        assertEquals("Some text", getResult("echo \"Some text\";"));
+    }
+
+    @Test
+    public void echoStringVariable() throws LangException {
+        assertEquals("Some text", getResult("string message = \"Some text\"; echo message;"));
+    }
+
+    @Test
+    public void stringConcat() throws LangException {
+        assertEquals("Hello, Bob", getResult("string name = \"Bob\"; echo \"Hello, \" + name;"));
+    }
+
+    @Test
+    public void stringNumberConcat() throws LangException {
+        assertEquals("Number is 100500", getResult("int number = 100500; echo \"Number is \" + number;"));
+    }
+
+    @Test
+    public void stringBoolConcat() throws LangException {
+        assertEquals("Flag is false", getResult("bool flag = false; echo \"Flag is \" + flag;"));
+    }
+
+    @Test
+    public void stringGetByIndex() throws LangException {
+        assertEquals("s", getResult("string message = \"Test\"; echo message[2];"));
+    }
+
+    @Test
+    public void stringSetByIndex() throws LangException {
+        assertEquals("Text", getResult("string message = \"Test\"; message[2] = 'x'; echo message;"));
+    }
+
+    @Test
+    public void intGetByIndex() throws LangException {
+        try {
+            getResult("int i = 100; echo i[2];");
+        } catch (SyntaxException e) {
+            Assert.assertEquals("Syntax error at line 1: array type expected", e.getMessage());
+        }
     }
 
     private String getResult(String source) throws LangException {
