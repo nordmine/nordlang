@@ -161,11 +161,7 @@ public class Parser {
         move();
         int inner = 0;
         while (look.getTag() != Tag.CLOSE_SQUARE) { // одна итерация - один элемент массива
-            //Expression indexExpr = new ConstantExpression(line, outer * t.getWidth() + inner);
             TypeToken type = t.getArrayType();
-
-            //Expression widthExpr = new ConstantExpression(line, type.getWidth());
-            //Expression loc = new BinaryOperator(line, new Token(Tag.MUL), indexExpr, widthExpr);
             Access x = new Access(line, variable, new ConstantExpression(line, inner), type);
             statement = new Seq(line, statement, new SetElem(line, x, bool()));
             inner++;
@@ -327,9 +323,6 @@ public class Parser {
                 x = new ConstantExpression(line, look, TypeToken.STRING);
                 move();
                 return x;
-            default:
-                error("unexpected token: " + look);
-                return x;
             case ID:
                 WordToken variableToken = (WordToken) look;
                 VariableExpression variable = top.get(variableToken);
@@ -337,11 +330,14 @@ public class Parser {
                     error(String.format("variable '%s' is not defined", look.toString()));
                 }
                 move();
-                if (look.getTag() != Tag.OPEN_SQUARE) {
-                    return variable;
-                } else {
+                if (look.getTag() == Tag.OPEN_SQUARE) {
                     return offset(variable);
+                } else {
+                    return variable;
                 }
+            default:
+                error("unexpected token: " + look);
+                return x;
         }
     }
 

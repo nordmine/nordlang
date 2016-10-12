@@ -6,7 +6,7 @@ import org.junit.Before;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-public abstract class OutputTest extends CommonTest {
+public abstract class OutputTest {
 
     protected final ByteArrayOutputStream output = new ByteArrayOutputStream();
 
