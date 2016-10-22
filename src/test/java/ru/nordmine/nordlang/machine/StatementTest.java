@@ -1,0 +1,46 @@
+package ru.nordmine.nordlang.machine;
+
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+import ru.nordmine.nordlang.exceptions.LangException;
+import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
+
+import static org.testng.Assert.assertEquals;
+
+public class StatementTest extends MachineTest {
+
+    @DataProvider
+    public Object[][] sourceDataProvider() {
+        return new Object[][]{
+                {"echo 1; // echo 2;\n echo 3;", "13"},
+                {"int i = 0; while(i < 5) { echo i + 1; echo ','; i=i+1;}", "1,2,3,4,5,"},
+                {"if (5 > 6) { echo 7;} else {echo 8;}", "8"},
+                {"if (5 < 6) { echo 7;} else {echo 8;}", "7"},
+                {"if (5 < 6) { echo 7;} echo 8;", "78"},
+                {"int i = 1; while(i < 10) { if (i % 5 == 0) { break; } echo i; echo','; i = i + 1; }", "1,2,3,4,"},
+                {"int a = 1; char b='B'; if (a >= 1 and b == 'B') { echo 3;} else {echo 4;}", "3"},
+                {"int a = 1; char b='B'; if (a < 0 or true) { echo 3;} else {echo 4;}", "3"}
+        };
+    }
+
+    @Test(dataProvider = "sourceDataProvider")
+    public void compare(String source, String expectedOutput) throws LangException {
+        assertEquals(getResult(source), expectedOutput);
+    }
+
+    @Test(
+            expectedExceptions = SyntaxException.class,
+            expectedExceptionsMessageRegExp = "Syntax error at line 1: boolean value required in if"
+    )
+    public void nonBoolValueInIf() throws LangException {
+        getResult("int a = 1; if (a) {echo 2;}");
+    }
+
+    @Test(
+            expectedExceptions = SyntaxException.class,
+            expectedExceptionsMessageRegExp = "Syntax error at line 2: boolean value required in while"
+    )
+    public void nonBoolValueInWhile() throws LangException {
+        getResult("int a = 1;\nwhile (a)\n{echo 2;}");
+    }
+}
