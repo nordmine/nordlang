@@ -1,7 +1,7 @@
 nordlang
 ========
 Пример скрипта:
-
+```
 int main() {
     string name = "Вася";
     echo greeting(name);
@@ -36,3 +36,4 @@ int abs(int val) {
     }
     return val;
 }
+```
