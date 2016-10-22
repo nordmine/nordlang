@@ -1,7 +1,7 @@
 nordlang
 ========
 Пример скрипта:
-```
+```C#
 int main() {
     string name = "Вася";
     echo greeting(name);
