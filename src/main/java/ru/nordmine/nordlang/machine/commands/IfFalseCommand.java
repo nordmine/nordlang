@@ -26,4 +26,9 @@ public class IfFalseCommand extends Command {
     public String toString() {
         return "if FALSE goto " + label;
     }
+
+    @Override
+    public Label getDestinationLabel() {
+        return label;
+    }
 }

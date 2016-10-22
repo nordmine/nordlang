@@ -14,16 +14,16 @@ public class Seq extends Statement {
     }
 
     @Override
-    public void gen(Program program, int b, int a) {
-        if (statement1 == Statement.Empty) {
-            statement2.gen(program, b, a);
-        } else if (statement2 == Statement.Empty) {
-            statement1.gen(program, b, a);
+    public void gen(Program program, int begin, int after) {
+        if (statement1 == Statement.EMPTY) {
+            statement2.gen(program, begin, after);
+        } else if (statement2 == Statement.EMPTY) {
+            statement1.gen(program, begin, after);
         } else {
             int label = program.newLabel();
-            statement1.gen(program, b, label);
+            statement1.gen(program, begin, label);
             program.fixLabel(label);
-            statement2.gen(program, label, a);
+            statement2.gen(program, label, after);
         }
     }
 }

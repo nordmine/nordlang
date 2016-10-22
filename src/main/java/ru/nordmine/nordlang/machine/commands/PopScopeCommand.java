@@ -7,7 +7,7 @@ public class PopScopeCommand extends Command {
 
     @Override
     public void execute(MachineState state) throws RunException {
-        state.popScope();
+        state.popBlockScope();
         state.incrementCmdIndex();
     }
 

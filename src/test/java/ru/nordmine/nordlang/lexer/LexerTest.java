@@ -1,9 +1,9 @@
 package ru.nordmine.nordlang.lexer;
 
+import org.testng.annotations.Test;
 import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
-import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 public class LexerTest {
 
@@ -14,100 +14,98 @@ public class LexerTest {
         lexer = new Lexer("   0 3 135   ");
 
         Token zeroToken = lexer.nextToken();
-        assertEquals(Tag.INT, zeroToken.getTag());
-        assertEquals("0", zeroToken.toString());
+        assertEquals(zeroToken.getTag(), Tag.INT);
+        assertEquals(zeroToken.toString(), "0");
 
         Token singleDigitToken = lexer.nextToken();
-        assertEquals(Tag.INT, singleDigitToken.getTag());
-        assertEquals("3", singleDigitToken.toString());
+        assertEquals(singleDigitToken.getTag(), Tag.INT);
+        assertEquals(singleDigitToken.toString(), "3");
 
         Token severalDigitsToken = lexer.nextToken();
-        assertEquals(Tag.INT, severalDigitsToken.getTag());
-        assertEquals("135", severalDigitsToken.toString());
+        assertEquals(severalDigitsToken.getTag(), Tag.INT);
+        assertEquals(severalDigitsToken.toString(), "135");
     }
 
     @Test
     public void mathExpression() throws SyntaxException {
         lexer = new Lexer("   var1+(var2/5 - 2) * 3   ");
-        assertEquals(Tag.ID, nextTag());
-        assertEquals(Tag.PLUS, nextTag());
-        assertEquals(Tag.OPEN_BRACKET, nextTag());
-        assertEquals(Tag.ID, nextTag());
-        assertEquals(Tag.DIVISION, nextTag());
-        assertEquals(Tag.INT, nextTag());
-        assertEquals(Tag.MINUS, nextTag());
-        assertEquals(Tag.INT, nextTag());
-        assertEquals(Tag.CLOSE_BRACKET, nextTag());
-        assertEquals(Tag.MUL, nextTag());
+        assertEquals(nextTag(), Tag.ID);
+        assertEquals(nextTag(), Tag.PLUS);
+        assertEquals(nextTag(), Tag.OPEN_BRACKET);
+        assertEquals(nextTag(), Tag.ID);
+        assertEquals(nextTag(), Tag.DIVISION);
+        assertEquals(nextTag(), Tag.INT);
+        assertEquals(nextTag(), Tag.MINUS);
+        assertEquals(nextTag(), Tag.INT);
+        assertEquals(nextTag(), Tag.CLOSE_BRACKET);
+        assertEquals(nextTag(), Tag.MUL);
         Token realToken = lexer.nextToken();
-        assertEquals(Tag.INT, realToken.getTag());
-        assertEquals("3", realToken.toString());
+        assertEquals(realToken.getTag(), Tag.INT);
+        assertEquals(realToken.toString(), "3");
     }
 
     @Test
     public void assignWithExpression() throws SyntaxException {
         lexer = new Lexer("int i=20+3");
-        assertEquals(Tag.BASIC, nextTag());
-        assertEquals(Tag.ID, nextTag());
-        assertEquals(Tag.ASSIGN, nextTag());
-        assertEquals(Tag.INT, nextTag());
-        assertEquals(Tag.PLUS, nextTag());
-        assertEquals(Tag.INT, nextTag());
+        assertEquals(nextTag(), Tag.BASIC);
+        assertEquals(nextTag(), Tag.ID);
+        assertEquals(nextTag(), Tag.ASSIGN);
+        assertEquals(nextTag(), Tag.INT);
+        assertEquals(nextTag(), Tag.PLUS);
+        assertEquals(nextTag(), Tag.INT);
     }
 
     @Test
     public void inlineCommentOnly() throws SyntaxException {
         lexer = new Lexer("//i");
-        assertEquals(Tag.END_OF_FILE, nextTag());
+        assertEquals(nextTag(), Tag.END_OF_FILE);
     }
 
     @Test
     public void beginInlineComment() throws SyntaxException {
         lexer = new Lexer("// some text\n10");
-        assertEquals("10", lexer.nextToken().toString());
+        assertEquals(lexer.nextToken().toString(), "10");
     }
 
     @Test
     public void middleInlineComment() throws SyntaxException {
         lexer = new Lexer("20 / 1  // comment\n30 ");
-        assertEquals("20", lexer.nextToken().toString());
-        assertEquals(Tag.DIVISION, nextTag());
-        assertEquals("1", lexer.nextToken().toString());
-        assertEquals("30", lexer.nextToken().toString());
+        assertEquals(lexer.nextToken().toString(), "20");
+        assertEquals(nextTag(), Tag.DIVISION);
+        assertEquals(lexer.nextToken().toString(), "1");
+        assertEquals(lexer.nextToken().toString(), "30");
     }
 
     @Test
     public void charLiteral() throws SyntaxException {
         lexer = new Lexer("   'a'");
-        assertEquals("'a'", lexer.nextToken().toString());
+        assertEquals(lexer.nextToken().toString(), "'a'");
     }
 
-    @Test
-    public void charLiteralWithoutEnding() {
+    @Test(
+            expectedExceptions = SyntaxException.class,
+            expectedExceptionsMessageRegExp = "Syntax error at line 1: char literal contains more than 1 symbol"
+    )
+    public void charLiteralWithoutEnding() throws SyntaxException {
         lexer = new Lexer("    'b");
-        try {
-            lexer.nextToken();
-        } catch (SyntaxException e) {
-            assertEquals("Syntax error at line 1: char literal contains more than 1 symbol", e.getMessage());
-        }
+        lexer.nextToken();
     }
 
     @Test
     public void stringLiteral() throws SyntaxException {
         lexer = new Lexer("   \"some text\"");
         Token stringToken = lexer.nextToken();
-        assertEquals(Tag.STRING, stringToken.getTag());
-        assertEquals("some text", stringToken.toString());
+        assertEquals(stringToken.getTag(), Tag.STRING);
+        assertEquals(stringToken.toString(), "some text");
     }
 
-    @Test
-    public void stringLiteralWithoutEnding() {
+    @Test(
+            expectedExceptions = SyntaxException.class,
+            expectedExceptionsMessageRegExp = "Syntax error at line 1: unexpected end of string literal"
+    )
+    public void stringLiteralWithoutEnding() throws SyntaxException {
         lexer = new Lexer("  \"some text");
-        try {
-            lexer.nextToken();
-        } catch (SyntaxException e) {
-            assertEquals("Syntax error at line 1: unexpected end of string literal", e.getMessage());
-        }
+        lexer.nextToken();
     }
 
     private Tag nextTag() throws SyntaxException {

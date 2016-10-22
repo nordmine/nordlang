@@ -26,12 +26,12 @@ public class While extends Statement {
     }
 
     @Override
-    public void gen(Program program, int b, int a) {
-        after = a;
-        expr.jumping(program, 0, a);
+    public void gen(Program program, int begin, int after) {
+        this.after = after;
+        expr.jumping(program, 0, after);
         int label = program.newLabel();
         program.fixLabel(label);
-        statement.gen(program, label, b);
-        program.addGotoCommand(b);
+        statement.gen(program, label, begin);
+        program.addGotoCommand(begin);
     }
 }

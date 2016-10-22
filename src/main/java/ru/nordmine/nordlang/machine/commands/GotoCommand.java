@@ -21,4 +21,9 @@ public class GotoCommand extends Command {
     public String toString() {
         return "GOTO " + label;
     }
+
+    @Override
+    public Label getDestinationLabel() {
+        return label;
+    }
 }

@@ -6,6 +6,7 @@ import ru.nordmine.nordlang.machine.value.Value;
 import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 import ru.nordmine.nordlang.syntax.expressions.ConstantExpression;
 import ru.nordmine.nordlang.syntax.expressions.Expression;
+import ru.nordmine.nordlang.syntax.expressions.MethodCallExpression;
 import ru.nordmine.nordlang.syntax.expressions.VariableExpression;
 import ru.nordmine.nordlang.syntax.expressions.logical.And;
 import ru.nordmine.nordlang.syntax.expressions.logical.Not;
@@ -16,54 +17,125 @@ import ru.nordmine.nordlang.syntax.expressions.operators.BinaryOperator;
 import ru.nordmine.nordlang.syntax.expressions.operators.UnaryOperator;
 import ru.nordmine.nordlang.syntax.statements.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
 public class Parser {
 
+    private final String source;
     private Lexer lexer;
     private Token look; // предпросмотр
     private ParserScope top = null;
     private int line = 0;
+    private MethodInfo currentMethod;
+    private Signatures signatures = new Signatures();
+    private boolean hasReturnStatement;
 
-    public Parser(Lexer lexer) {
-        this.lexer = lexer;
+    public Parser(String source) {
+        this.source = source;
     }
 
-    private void move() throws SyntaxException {
-        look = lexer.nextToken();
-        line = lexer.getLine();
-    }
-
-    private void error(String s) throws SyntaxException {
-        throw new SyntaxException(lexer.getLine(), s);
-    }
-
-    private void match(Tag t) throws SyntaxException {
-        if (look.getTag() == t) {
+    private void loadMethodSignatures() throws SyntaxException {
+        this.lexer = new Lexer(source);
+        move();
+        while (look.getTag() == Tag.BASIC) {
+            MethodInfo methodInfo = readMethodSignature();
+            match(Tag.BEGIN_BLOCK);
+            Stack<Tag> blockStack = new Stack<>();
+            while (look.getTag() != Tag.END_BLOCK || !blockStack.isEmpty()) {
+                if (look.getTag() == Tag.BEGIN_BLOCK) {
+                    blockStack.push(look.getTag());
+                }
+                if (look.getTag() == Tag.END_BLOCK) {
+                    blockStack.pop();
+                }
+                move();
+            }
+            if (signatures.contains(methodInfo.getName())) {
+                throw new SyntaxException(line, "method '" + methodInfo.getName() + "()' already defined");
+            }
+            signatures.putMethod(methodInfo);
             move();
-        } else {
-            error(String.format("Tag %s is expected, but was %s", t, look.getTag()));
         }
     }
 
     public Program createProgram() throws SyntaxException {
+        loadMethodSignatures();
+        this.lexer = new Lexer(source);
         Program program = new Program();
         move();
-        Statement s = method();
-        int begin = program.newLabel();
-        int after = program.newLabel();
-        program.fixLabel(begin);
-        s.gen(program, begin, after);
-        program.fixLabel(after);
-        program.addComment("return");
+        while (look.getTag() == Tag.BASIC) {
+            hasReturnStatement = false;
+            int begin = program.newLabel();
+            int after = program.newLabel();
+            program.fixLabel(begin); // todo изменить механизм отложенного проставления меток
+            Statement s = method();
+            currentMethod.setBeginLabel(program.getLabel(begin));
+            s.gen(program, begin, after);
+            program.fixLabel(after);
+            checkForMissingReturn(program, after);
+        }
+        MethodInfo mainMethodInfo = signatures.getMainMethod();
+        if (mainMethodInfo == null) {
+            throw new SyntaxException(line, "method 'int main()' not found");
+        }
+        program.setStartCommandIndex(mainMethodInfo.getBeginLabel().getDstPosition());
         return program;
     }
 
+    private void checkForMissingReturn(Program program, int afterLabelIndex) throws SyntaxException {
+        // todo улучшить контроль за наличием возвращаемых значений
+        long missingReturnCount = program.getCommands().stream()
+                .filter(c -> c.getDestinationLabel() == program.getLabel(afterLabelIndex))
+                .count();
+        if (missingReturnCount > 0 || !hasReturnStatement) {
+            throw new SyntaxException(line, "missing return statement");
+        }
+    }
+
     private Statement method() throws SyntaxException {
-        // todo обработка метода и его параметров
-        TypeToken type = type();
+        MethodInfo methodInfo = readMethodSignature();
+        currentMethod = signatures.getMethodByName(methodInfo.getName()); // todo лишнее действие
+        top = new ParserScope(null);
+        List<VariableExpression> paramExprList = new ArrayList<>();
+        Statement s = Statement.EMPTY;
+        for (ParamInfo paramInfo : currentMethod.getParams()) {
+            VariableExpression variable = new VariableExpression(line, paramInfo.getId(), paramInfo.getType(), top.getUniqueIndexSequence());
+            paramExprList.add(variable);
+
+            // todo поддержка массивов
+            Value initialValue = ParserUtils.getInitialValueByToken(line, paramInfo.getType());
+            Define define = new Define(line, variable, initialValue); // todo initialValue реализовать в Value?
+            s = new Seq(line, s, define);
+
+            top.put(paramInfo.getId(), variable);
+        }
+        match(Tag.BEGIN_BLOCK);
+        s = new Seq(line, s, new MethodStatement(line, paramExprList, statements()));
+        match(Tag.END_BLOCK);
+        top = null;
+        return s;
+    }
+
+    private MethodInfo readMethodSignature() throws SyntaxException {
+        TypeToken returnType = type();
+        WordToken methodNameToken = (WordToken) look;
+        MethodInfo methodInfo = new MethodInfo(returnType, methodNameToken.getLexeme());
         match(Tag.ID);
         match(Tag.OPEN_BRACKET);
+        while (look.getTag() != Tag.CLOSE_BRACKET) {
+            TypeToken paramType = type();
+            WordToken paramToken = (WordToken) look;
+            match(Tag.ID);
+            methodInfo.addParam(paramType, paramToken);
+            if (look.getTag() != Tag.COMMA) {
+                break;
+            }
+            match(Tag.COMMA);
+        }
         match(Tag.CLOSE_BRACKET);
-        return block();
+        return methodInfo;
     }
 
     private Statement block() throws SyntaxException {
@@ -92,7 +164,7 @@ public class Parser {
         switch (look.getTag()) {
             case SEMICOLON:
                 move();
-                return Statement.Empty;
+                return Statement.EMPTY;
             case BASIC:
                 return definition();
             case IF:
@@ -130,25 +202,33 @@ public class Parser {
                 return new Echo(line, x);
             case BEGIN_BLOCK:
                 return block();
+            case RETURN:
+                match(Tag.RETURN);
+                x = bool();
+                if (currentMethod.getReturnType() != x.getType()) {
+                    throw new SyntaxException(line, "method should return " + currentMethod.getReturnType() + ", but was " + x.getType());
+                }
+                hasReturnStatement = true;
+                return new ReturnStatement(line, x, currentMethod);
             default:
                 return assign();
         }
     }
 
     private Statement definition() throws SyntaxException {
-        TypeToken t = type();
+        TypeToken typeToken = type();
         WordToken variableToken = (WordToken) look;
         match(Tag.ID);
-        VariableExpression variable = new VariableExpression(line, variableToken, t, top.getUniqueIndexSequence());
+        VariableExpression variable = new VariableExpression(line, variableToken, typeToken, top.getUniqueIndexSequence());
         top.put(variableToken, variable);
 
-        Statement statement = Statement.Empty;
+        Statement statement = Statement.EMPTY;
         match(Tag.ASSIGN);
         if (look.getTag() == Tag.OPEN_SQUARE) {
             // объявление массива через квадратные скобки
-            statement = arrayDefinition((ArrayToken) t, variable, statement);
+            statement = arrayDefinition((ArrayToken) typeToken, variable, statement);
         } else {
-            Value initialValue = ParserUtils.getInitialValueByToken(t);
+            Value initialValue = ParserUtils.getInitialValueByToken(line, typeToken);
             Define define = new Define(line, variable, initialValue);
             statement = new Seq(line, define, new Set(line, variable, bool()));
         }
@@ -171,7 +251,7 @@ public class Parser {
             match(Tag.COMMA);
         }
         match(Tag.CLOSE_SQUARE);
-        Value initialValue = ParserUtils.getInitialValueByToken(t.getArrayType());
+        Value initialValue = ParserUtils.getInitialValueByToken(line, t.getArrayType());
         DefineArray defineArray = new DefineArray(line, variable, inner, initialValue);
         statement = new Seq(line, defineArray, statement);
         return statement;
@@ -324,16 +404,36 @@ public class Parser {
                 move();
                 return x;
             case ID:
-                WordToken variableToken = (WordToken) look;
-                VariableExpression variable = top.get(variableToken);
-                if (variable == null) {
-                    error(String.format("variable '%s' is not defined", look.toString()));
-                }
+                WordToken wordToken = (WordToken) look;
                 move();
-                if (look.getTag() == Tag.OPEN_SQUARE) {
-                    return offset(variable);
+                if (look.getTag() == Tag.OPEN_BRACKET) {
+                    // если за именем идёт круглая скобка, считаем, что это имя метода (иначе - переменная)
+                    String methodName = wordToken.getLexeme();
+                    move();
+                    List<Expression> paramExpressions = new ArrayList<>();
+                    while (look.getTag() != Tag.CLOSE_BRACKET) {
+                        paramExpressions.add(bool());
+                        if (look.getTag() != Tag.COMMA) {
+                            break;
+                        }
+                        match(Tag.COMMA);
+                    }
+                    match(Tag.CLOSE_BRACKET);
+                    if (!signatures.contains(methodName)) {
+                        error(String.format("method '%s()' is not defined", methodName));
+                    }
+                    MethodInfo methodInfo = signatures.getMethodByName(methodName);
+                    return new MethodCallExpression(line, wordToken, methodInfo, paramExpressions);
                 } else {
-                    return variable;
+                    VariableExpression variable = top.get(wordToken);
+                    if (variable == null) {
+                        error(String.format("variable '%s' is not defined", wordToken.toString()));
+                    }
+                    if (look.getTag() == Tag.OPEN_SQUARE) {
+                        return offset(variable);
+                    } else {
+                        return variable;
+                    }
                 }
             default:
                 error("unexpected token: " + look);
@@ -355,6 +455,25 @@ public class Parser {
         } else {
             type = ((ArrayToken) type).getArrayType();
             return new Access(line, a, indexExpr, type);
+        }
+    }
+
+    // утилитарные методы
+
+    private void move() throws SyntaxException {
+        look = lexer.nextToken();
+        line = lexer.getLine();
+    }
+
+    private void error(String s) throws SyntaxException {
+        throw new SyntaxException(lexer.getLine(), s);
+    }
+
+    private void match(Tag t) throws SyntaxException {
+        if (look.getTag() == t) {
+            move();
+        } else {
+            error(String.format("Tag %s is expected, but was %s", t, look.getTag()));
         }
     }
 }

@@ -80,4 +80,9 @@ public class IntValue extends Value {
         }
         return new IntValue(this.value % rightValue);
     }
+
+    @Override
+    public String toString() {
+        return Integer.toString(value);
+    }
 }

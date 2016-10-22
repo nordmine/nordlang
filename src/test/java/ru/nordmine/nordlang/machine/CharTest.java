@@ -1,44 +1,35 @@
 package ru.nordmine.nordlang.machine;
 
-import org.junit.Test;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 import ru.nordmine.nordlang.exceptions.LangException;
 import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 public class CharTest extends MachineTest {
 
-    @Test
-    public void echoChar() throws LangException {
-        assertEquals("b", getResult("echo 'b';"));
+    @DataProvider
+    public Object[][] sourceDataProvider() {
+        return new Object[][]{
+                {"echo 'b';", "b"},
+                {"char symbol = 'B'; echo symbol;", "B"},
+                {"char[] message = ['T','e','s','t']; int i = 0; while(i < 4) { echo message[i]; i = i + 1;}", "Test"},
+                {"char[] chars = ['a', 'b', 'c']; echo chars[1];", "b"},
+                {"char[] message = ['T','e','s','t']; message[2] = 'x'; echo message;", "[T,e,x,t]"}
+        };
     }
 
-    @Test
-    public void echoCharVariable() throws LangException {
-        assertEquals("B", getResult("char symbol = 'B'; echo symbol;"));
+    @Test(dataProvider = "sourceDataProvider")
+    public void compare(String source, String expectedOutput) throws LangException {
+        assertEquals(getResult(source), expectedOutput);
     }
 
-    @Test
-    public void echoCharArray() throws LangException {
-        assertEquals("Test", getResult("char[] message = ['T','e','s','t']; int i = 0; while(i < 4) { echo message[i]; i = i + 1;}"));
-    }
-
-    @Test
-    public void getCharByIndex() throws LangException {
-        assertEquals("b", getResult("char[] chars = ['a', 'b', 'c']; echo chars[1];"));
-    }
-
-    @Test
-    public void setCharByIndex() throws LangException {
-        assertEquals("[T,e,x,t]", getResult("char[] message = ['T','e','s','t']; message[2] = 'x'; echo message;"));
-    }
-
-    @Test
+    @Test(
+            expectedExceptions = SyntaxException.class,
+            expectedExceptionsMessageRegExp = "Syntax error at line 1: incompatible types: char, int"
+    )
     public void charIntConcat() throws LangException {
-        try {
-            getResult("echo '2' + 4;");
-        } catch (SyntaxException e) {
-            assertEquals("Syntax error at line 1: incompatible types: char, int", e.getMessage());
-        }
+        getResult("echo '2' + 4;");
     }
 }

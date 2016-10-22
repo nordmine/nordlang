@@ -1,20 +1,19 @@
 package ru.nordmine.nordlang.machine;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 import ru.nordmine.nordlang.exceptions.LangException;
 import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 public class ScopeTest extends MachineTest {
 
-    @Test
+    @Test(
+            expectedExceptions = SyntaxException.class,
+            expectedExceptionsMessageRegExp = "Syntax error at line 1: variable 'var' is not defined"
+    )
     public void undefinedVariable() throws LangException {
-        try {
-            getResult("echo var;");
-        } catch (SyntaxException e) {
-            assertEquals("Syntax error at line 1: variable 'var' is not defined", e.getMessage());
-        }
+        getResult("echo var;");
     }
 
     @Test

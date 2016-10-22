@@ -19,7 +19,7 @@ public class DefineArray extends Statement {
     }
 
     @Override
-    public void gen(Program program, int b, int a) {
+    public void gen(Program program, int begin, int after) {
         program.add(new DefineArrayCommand(variable.getUniqueIndex(), initialSize, initialValue));
     }
 }

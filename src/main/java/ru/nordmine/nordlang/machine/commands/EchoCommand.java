@@ -7,7 +7,7 @@ public class EchoCommand extends Command {
 
     @Override
     public void execute(MachineState state) throws RunException {
-        System.out.print(state.getValueStack().pop().getAsString());
+        state.getPrintStream().print(state.getValueStack().pop().getAsString());
         state.incrementCmdIndex();
     }
 

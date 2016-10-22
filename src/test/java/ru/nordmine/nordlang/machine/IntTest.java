@@ -1,54 +1,43 @@
 package ru.nordmine.nordlang.machine;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 import ru.nordmine.nordlang.exceptions.LangException;
 import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 public class IntTest extends MachineTest {
 
-    @Test
-    public void echoInt() throws LangException {
-        assertEquals("100", getResult("echo 100;"));
+    @DataProvider
+    public Object[][] sourceDataProvider() {
+        return new Object[][]{
+                {"echo 100;", "100"},
+                {"int number = 10; echo number;", "10"},
+                {"int[] v = [42,1]; echo v;", "[42,1]"},
+                {"int[] v = [42,1, 15]; echo v[2];", "15"},
+                {"int[] v = [42,1, 15]; v[2] = 18; echo v;", "[42,1,18]"}
+        };
     }
 
-    @Test
-    public void echoIntVariable() throws LangException {
-        assertEquals("10", getResult("int number = 10; echo number;"));
+    @Test(dataProvider = "sourceDataProvider")
+    public void compare(String source, String expectedOutput) throws LangException {
+        assertEquals(getResult(source), expectedOutput);
     }
 
-    @Test
-    public void echoIntArray() throws LangException {
-        assertEquals("[42,1]", getResult("int[] v = [42,1]; echo v;"));
-    }
-
-    @Test
-    public void getIntByIndex() throws LangException {
-        assertEquals("15", getResult("int[] v = [42,1, 15]; echo v[2];"));
-    }
-
-    @Test
-    public void setIntByIndex() throws LangException {
-        assertEquals("[42,1,18]", getResult("int[] v = [42,1, 15]; v[2] = 18; echo v;"));
-    }
-
-    @Test
+    @Test(
+            expectedExceptions = SyntaxException.class,
+            expectedExceptionsMessageRegExp = "Syntax error at line 1: array type expected"
+    )
     public void intGetByIndexError() throws LangException {
-        try {
-            getResult("int i = 100; echo i[2];");
-        } catch (SyntaxException e) {
-            Assert.assertEquals("Syntax error at line 1: array type expected", e.getMessage());
-        }
+        getResult("int i = 100; echo i[2];");
     }
 
-    @Test
+    @Test(
+            expectedExceptions = SyntaxException.class,
+            expectedExceptionsMessageRegExp = "Syntax error at line 1: incompatible types: int, char"
+    )
     public void intCharConcat() throws LangException {
-        try {
-            getResult("echo 1 + '2';");
-        } catch (SyntaxException e) {
-            assertEquals("Syntax error at line 1: incompatible types: int, char", e.getMessage());
-        }
+        getResult("echo 1 + '2';");
     }
 }

@@ -14,7 +14,7 @@ public class Echo extends Statement {
     }
 
     @Override
-    public void gen(Program program, int b, int a) {
+    public void gen(Program program, int begin, int after) {
         expr.gen(program);
         program.add(new EchoCommand());
     }

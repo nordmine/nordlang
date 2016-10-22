@@ -31,7 +31,7 @@ public class ParserUtils {
         throwError(line, "incompatible types: " + type1 + ", " + type2);
     }
 
-    public static Value getInitialValueByToken(TypeToken typeToken) throws SyntaxException {
+    public static Value getInitialValueByToken(int line, TypeToken typeToken) throws SyntaxException {
         if (typeToken == TypeToken.BOOL) {
             return BoolValue.FALSE;
         } else if (typeToken == TypeToken.CHAR) {
@@ -41,7 +41,7 @@ public class ParserUtils {
         } else if (typeToken == TypeToken.STRING) {
             return new StringValue(new StringBuilder());
         } else {
-            throw new SyntaxException("Unknown typeToken: " + typeToken);
+            throw new SyntaxException(line, "unknown typeToken: " + typeToken);
         }
     }
 }

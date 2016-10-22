@@ -21,10 +21,10 @@ public class If extends Statement {
     }
 
     @Override
-    public void gen(Program program, int b, int a) {
+    public void gen(Program program, int begin, int after) {
         int label = program.newLabel();
-        expr.jumping(program, 0, a); // Проходим при значении true, проход к метке a при значении false
+        expr.jumping(program, 0, after); // Проходим при значении true, проход к метке a при значении false
         program.fixLabel(label);
-        statement.gen(program, label, a);
+        statement.gen(program, label, after);
     }
 }

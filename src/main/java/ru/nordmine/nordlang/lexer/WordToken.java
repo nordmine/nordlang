@@ -1,5 +1,7 @@
 package ru.nordmine.nordlang.lexer;
 
+import java.util.Objects;
+
 public class WordToken extends Token {
 
     public static final WordToken AND = new WordToken(Tag.AND, "and");
@@ -17,6 +19,7 @@ public class WordToken extends Token {
     public static final WordToken WHILE = new WordToken(Tag.WHILE, "while");
     public static final WordToken DO = new WordToken(Tag.DO, "do");
     public static final WordToken BREAK = new WordToken(Tag.BREAK, "break");
+    public static final WordToken RETURN = new WordToken(Tag.RETURN, "return");
 
     // для переменных здесь содержится её имя
     private final String lexeme;
@@ -33,5 +36,19 @@ public class WordToken extends Token {
     @Override
     public String toString() {
         return lexeme;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof WordToken)) return false;
+        if (!super.equals(o)) return false;
+        WordToken wordToken = (WordToken) o;
+        return Objects.equals(lexeme, wordToken.lexeme);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), lexeme);
     }
 }

@@ -1,7 +1,6 @@
 package ru.nordmine.nordlang;
 
 import ru.nordmine.nordlang.exceptions.LangException;
-import ru.nordmine.nordlang.lexer.Lexer;
 import ru.nordmine.nordlang.machine.Machine;
 import ru.nordmine.nordlang.machine.Program;
 import ru.nordmine.nordlang.syntax.Parser;
@@ -16,13 +15,14 @@ import java.nio.file.Paths;
 public class Runner {
 
     public static void main(String[] args) {
-        System.out.println("Nordlang (c) 2016");
+        System.out.println();
         if (args.length >= 1) {
             String sourceLocation = args[0];
             new Runner().run(sourceLocation);
         } else {
             System.out.println("Please, specify source file location");
         }
+        System.out.println();
     }
 
     private void run(String sourceLocation) {
@@ -52,10 +52,9 @@ public class Runner {
     }
 
     private void processSource(String source) throws LangException {
-        Lexer lexer = new Lexer(source);
-        Parser parser = new Parser(lexer);
+        Parser parser = new Parser(source);
         Program program = parser.createProgram();
-        Machine machine = new Machine();
+        Machine machine = new Machine(System.out);
         machine.execute(program);
     }
 }

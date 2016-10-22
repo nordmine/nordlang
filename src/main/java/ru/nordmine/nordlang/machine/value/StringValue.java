@@ -51,4 +51,9 @@ public class StringValue extends Value {
         checkForType(ValueType.CHAR, newValue);
         value.setCharAt(indexValue, ((CharValue)newValue).value);
     }
+
+    @Override
+    public String toString() {
+        return String.format("\"%s\"", value);
+    }
 }

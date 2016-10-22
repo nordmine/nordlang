@@ -17,7 +17,7 @@ public class Break extends Statement {
     }
 
     @Override
-    public void gen(Program program, int b, int a) {
+    public void gen(Program program, int begin, int after) {
         program.addGotoCommand(statement.after);
     }
 }

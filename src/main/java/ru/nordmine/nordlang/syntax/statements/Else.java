@@ -22,14 +22,14 @@ public class Else extends Statement {
     }
 
     @Override
-    public void gen(Program program, int b, int a) {
+    public void gen(Program program, int begin, int after) {
         int label1 = program.newLabel();
         int label2 = program.newLabel();
         expr.jumping(program, 0, label2);
         program.fixLabel(label1);
-        statement1.gen(program, label1, a);
-        program.addGotoCommand(a);
+        statement1.gen(program, label1, after);
+        program.addGotoCommand(after);
         program.fixLabel(label2);
-        statement2.gen(program, label2, a);
+        statement2.gen(program, label2, after);
     }
 }

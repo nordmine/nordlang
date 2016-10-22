@@ -4,11 +4,7 @@ import ru.nordmine.nordlang.exceptions.LangException;
 
 public class SyntaxException extends LangException {
 
-    private int line = 0;
-
-    public SyntaxException(String message) {
-        super(message);
-    }
+    private int line = -1;
 
     public SyntaxException(int line, String message) {
         super(message);

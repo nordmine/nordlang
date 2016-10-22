@@ -13,6 +13,7 @@ public enum Tag {
     IF,
     ECHO,
     INDEX,
+    RETURN,
 
     /* types */
     BASIC,
