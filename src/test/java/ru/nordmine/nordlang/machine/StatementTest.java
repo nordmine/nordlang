@@ -21,7 +21,8 @@ public class StatementTest extends MachineTest {
                 {"int a = 1; char b='B'; if (a >= 1 and b == 'B') { echo 3;} else {echo 4;}", "3"},
                 {"int a = 1; char b='B'; if (a < 0 or true) { echo 3;} else {echo 4;}", "3"},
                 {"string text = \"Hello\"; echo size(text);", "5"},
-                {"int[] matrix = [100,200,300]; echo size(matrix);", "3"}
+                {"int[] matrix = [100,200,300]; echo size(matrix);", "3"},
+                {"string[] matrix = [\"one\",\"two\"]; int len = size(matrix); echo len;", "2"}
         };
     }
 
