@@ -4,10 +4,7 @@ import ru.nordmine.nordlang.lexer.*;
 import ru.nordmine.nordlang.machine.Program;
 import ru.nordmine.nordlang.machine.value.Value;
 import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
-import ru.nordmine.nordlang.syntax.expressions.ConstantExpression;
-import ru.nordmine.nordlang.syntax.expressions.Expression;
-import ru.nordmine.nordlang.syntax.expressions.MethodCallExpression;
-import ru.nordmine.nordlang.syntax.expressions.VariableExpression;
+import ru.nordmine.nordlang.syntax.expressions.*;
 import ru.nordmine.nordlang.syntax.expressions.logical.And;
 import ru.nordmine.nordlang.syntax.expressions.logical.Not;
 import ru.nordmine.nordlang.syntax.expressions.logical.Or;
@@ -409,6 +406,15 @@ public class Parser {
                 x = new ConstantExpression(line, look, TypeToken.STRING);
                 move();
                 return x;
+            case SIZE:
+                match(Tag.SIZE);
+                match(Tag.OPEN_BRACKET);
+                Expression arg = bool();
+                if (arg.getType() != TypeToken.STRING && !arg.getType().getTag().equals(Tag.INDEX)) {
+                    throw new SyntaxException(line, "string or array required for size operator, but was " + arg.getType());
+                }
+                match(Tag.CLOSE_BRACKET);
+                return new SizeExpression(line, arg);
             case ID:
                 WordToken wordToken = (WordToken) look;
                 move();

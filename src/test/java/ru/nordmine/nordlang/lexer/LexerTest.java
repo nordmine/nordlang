@@ -82,6 +82,12 @@ public class LexerTest {
         assertEquals(lexer.nextToken().toString(), "'a'");
     }
 
+    @Test
+    public void sizeLiteral() throws SyntaxException {
+        lexer = new Lexer("  size(a) ");
+        assertEquals(nextTag(), Tag.SIZE);
+    }
+
     @Test(
             expectedExceptions = SyntaxException.class,
             expectedExceptionsMessageRegExp = "Syntax error at line 1: char literal contains more than 1 symbol"

@@ -19,7 +19,9 @@ public class StatementTest extends MachineTest {
                 {"if (5 < 6) { echo 7;} echo 8;", "78"},
                 {"int i = 1; while(i < 10) { if (i % 5 == 0) { break; } echo i; echo','; i = i + 1; }", "1,2,3,4,"},
                 {"int a = 1; char b='B'; if (a >= 1 and b == 'B') { echo 3;} else {echo 4;}", "3"},
-                {"int a = 1; char b='B'; if (a < 0 or true) { echo 3;} else {echo 4;}", "3"}
+                {"int a = 1; char b='B'; if (a < 0 or true) { echo 3;} else {echo 4;}", "3"},
+                {"string text = \"Hello\"; echo size(text);", "5"},
+                {"int[] matrix = [100,200,300]; echo size(matrix);", "3"}
         };
     }
 
@@ -42,5 +44,13 @@ public class StatementTest extends MachineTest {
     )
     public void nonBoolValueInWhile() throws LangException {
         getResult("int a = 1;\nwhile (a)\n{echo 2;}");
+    }
+
+    @Test(
+            expectedExceptions = SyntaxException.class,
+            expectedExceptionsMessageRegExp = "Syntax error at line 1: string or array required for size operator, but was int"
+    )
+    public void sizeOfIntValue() throws LangException {
+        getResult("int a = 1; echo size(a);}");
     }
 }

@@ -20,6 +20,7 @@ public class WordToken extends Token {
     public static final WordToken DO = new WordToken(Tag.DO, "do");
     public static final WordToken BREAK = new WordToken(Tag.BREAK, "break");
     public static final WordToken RETURN = new WordToken(Tag.RETURN, "return");
+    public static final WordToken SIZE = new WordToken(Tag.SIZE, "size");
 
     // для переменных здесь содержится её имя
     private final String lexeme;

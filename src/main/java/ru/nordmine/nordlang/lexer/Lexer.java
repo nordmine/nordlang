@@ -33,6 +33,7 @@ public class Lexer {
         reserve(WordToken.TRUE);
         reserve(WordToken.FALSE);
         reserve(WordToken.RETURN);
+        reserve(WordToken.SIZE);
 
         reserve(TypeToken.BOOL);
         reserve(TypeToken.INT);

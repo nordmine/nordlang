@@ -13,6 +13,10 @@ public abstract class Value {
 
     public abstract boolean isEquals(Value right) throws RunException;
 
+    public IntValue size() throws RunException {
+        throw new UnsupportedOperation("size");
+    }
+
     public boolean isGreaterThan(Value right) throws RunException {
         throw new UnsupportedOperation("isGreaterThan");
     }

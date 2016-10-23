@@ -14,6 +14,7 @@ public enum Tag {
     ECHO,
     INDEX,
     RETURN,
+    SIZE,
 
     /* types */
     BASIC,

@@ -21,6 +21,11 @@ public class ListValue extends Value {
     }
 
     @Override
+    public IntValue size() throws RunException {
+        return new IntValue(values.size());
+    }
+
+    @Override
     public ValueType getValueType() {
         return ValueType.LIST;
     }

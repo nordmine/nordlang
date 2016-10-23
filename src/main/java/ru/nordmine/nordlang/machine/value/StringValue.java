@@ -53,6 +53,11 @@ public class StringValue extends Value {
     }
 
     @Override
+    public IntValue size() throws RunException {
+        return new IntValue(value.length());
+    }
+
+    @Override
     public String toString() {
         return String.format("\"%s\"", value);
     }
