@@ -8,8 +8,14 @@ import ru.nordmine.nordlang.machine.value.*;
 public class ParserUtils {
 
     public static TypeToken checkTypes(TypeToken type1, TypeToken type2) {
-        if (type1 instanceof ArrayToken || type2 instanceof ArrayToken) {
-            return null;
+        if (type1 instanceof ArrayToken && type2 instanceof ArrayToken) {
+            TypeToken arrayType1 = ((ArrayToken) type1).getArrayType();
+            TypeToken arrayType2 = ((ArrayToken) type2).getArrayType();
+            if (arrayType1 == arrayType2) {
+                return arrayType1;
+            } else {
+                return null;
+            }
         } else if (type1 == TypeToken.INT && type2 == TypeToken.INT) {
             return TypeToken.INT;
         } else if (type1 == TypeToken.BOOL && type2 == TypeToken.BOOL) {
@@ -40,6 +46,9 @@ public class ParserUtils {
             return new IntValue(0);
         } else if (typeToken == TypeToken.STRING) {
             return new StringValue(new StringBuilder());
+        } else if (typeToken instanceof ArrayToken) {
+            TypeToken arrayType = ((ArrayToken) typeToken).getArrayType();
+            return new ListValue(getInitialValueByToken(line, arrayType), 0);
         } else {
             throw new SyntaxException(line, "unknown typeToken: " + typeToken);
         }

@@ -31,6 +31,10 @@ public class MethodTest extends MachineTest {
                         "int quad(int val) { return pow(val, 2); }", "25"},
                 {"int main() { echo abs(100 - 500); return 0; } " +
                         "int abs(int val) { if (val < 0) {val = -1 * val;} return val; }", "400"},
+                {"int main() {\nint[] ar = init();\necho ar; return 0;} " +
+                        "int[] init() { int[] ar = [1,2,3]; return ar; }", "[1,2,3]"},
+                {"int main() { int[] ar = [1,2,3]; echo ar[1]; ar = mod(ar); echo ar[1]; return 0;} " +
+                        "int[] mod(int[] ar) { ar[1] = 100; return ar; }", "2100"}
         };
     }
 

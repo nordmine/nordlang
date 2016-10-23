@@ -104,9 +104,14 @@ public class Parser {
             VariableExpression variable = new VariableExpression(line, paramInfo.getId(), paramInfo.getType(), top.getUniqueIndexSequence());
             paramExprList.add(variable);
 
-            // todo поддержка массивов
-            Value initialValue = ParserUtils.getInitialValueByToken(line, paramInfo.getType());
-            Define define = new Define(line, variable, initialValue); // todo initialValue реализовать в Value?
+            Statement define;
+            if (paramInfo.getType().getTag() == Tag.INDEX) {
+                Value initialValue = ParserUtils.getInitialValueByToken(line, ((ArrayToken) paramInfo.getType()).getArrayType());
+                define = new DefineArray(line, variable, 0, initialValue);
+            } else {
+                Value initialValue = ParserUtils.getInitialValueByToken(line, paramInfo.getType());
+                define = new Define(line, variable, initialValue); // todo initialValue реализовать в Value?
+            }
             s = new Seq(line, s, define);
 
             top.put(paramInfo.getId(), variable);
@@ -205,7 +210,7 @@ public class Parser {
             case RETURN:
                 match(Tag.RETURN);
                 x = bool();
-                if (currentMethod.getReturnType() != x.getType()) {
+                if (!currentMethod.getReturnType().equals(x.getType())) {
                     throw new SyntaxException(line, "method should return " + currentMethod.getReturnType() + ", but was " + x.getType());
                 }
                 hasReturnStatement = true;
@@ -228,6 +233,7 @@ public class Parser {
             // объявление массива через квадратные скобки
             statement = arrayDefinition((ArrayToken) typeToken, variable, statement);
         } else {
+            // здесь тоже может объявляться массив (например, через вызов метода или через другую переменную)
             Value initialValue = ParserUtils.getInitialValueByToken(line, typeToken);
             Define define = new Define(line, variable, initialValue);
             statement = new Seq(line, define, new Set(line, variable, bool()));
