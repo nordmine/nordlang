@@ -11,7 +11,7 @@ public class LexerTest {
 
     @Test
     public void numbers() throws SyntaxException {
-        lexer = new Lexer("   0 3 135   ");
+        lexer = new Lexer("   0 3\r\n135   ");
 
         Token zeroToken = lexer.nextToken();
         assertEquals(zeroToken.getTag(), Tag.INT);
@@ -107,10 +107,10 @@ public class LexerTest {
 
     @Test(
             expectedExceptions = SyntaxException.class,
-            expectedExceptionsMessageRegExp = "Syntax error at line 1: unexpected end of string literal"
+            expectedExceptionsMessageRegExp = "Syntax error at line 2: unexpected end of string literal"
     )
     public void stringLiteralWithoutEnding() throws SyntaxException {
-        lexer = new Lexer("  \"some text");
+        lexer = new Lexer(" \r\n  \"some text");
         lexer.nextToken();
     }
 

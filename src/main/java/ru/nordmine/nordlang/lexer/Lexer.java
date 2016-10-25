@@ -79,7 +79,7 @@ public class Lexer {
                 line++;
                 skipAll = false;
                 continue;
-            } else if (peek == ' ' || peek == '\t' || skipAll) {
+            } else if (peek == ' ' || peek == '\t' || peek == '\r' || skipAll) {
                 continue;
             }
 
