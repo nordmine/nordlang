@@ -3,10 +3,12 @@ nordlang
 Пример скрипта:
 ```C#
 int main() {
-    string[] parts = ["раз", "два", "три", "четыре"];
-    echo implode(parts, "-");
+    string text = "Some Text";
+    echo text + ':' + toUpper(text) + ',' + toLower(text);
     return 0;
 }
+
+// String utils
 
 string implode(string[] parts, string glue) {
     int len = size(parts);
@@ -45,6 +47,48 @@ int findChar(char c, string where) {
     return -1;
 }
 
+string toUpper(string original) {
+    int i = 0;
+    int len = size(original);
+    string upper = "";
+    while(i < len) {
+        upper = upper + toUpperChar(original[i]);
+        i = i + 1;
+    }
+    return upper;
+}
+
+char toUpperChar(char c) {
+    string capitalized = "ABCDEFGHIJKLMNOPQRSTUVWXYZАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+    string lowered = "abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+    int pos = findChar(c, lowered);
+    if (pos > 0) {
+        c = capitalized[pos];
+    }
+    return c;
+}
+
+string toLower(string original) {
+    int i = 0;
+    int len = size(original);
+    string lower = "";
+    while(i < len) {
+        lower = lower + toLowerChar(original[i]);
+        i = i + 1;
+    }
+    return lower;
+}
+
+char toLowerChar(char c) {
+    string capitalized = "ABCDEFGHIJKLMNOPQRSTUVWXYZАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+    string lowered = "abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+    int pos = findChar(c, capitalized);
+    if (pos > 0) {
+        c = lowered[pos];
+    }
+    return c;
+}
+
 bool containsChar(char c, string where) {
     return findChar(c, where) >= 0;
 }
@@ -52,6 +96,8 @@ bool containsChar(char c, string where) {
 bool isDigit(char c) {
     return containsChar(c, "0123456789");
 }
+
+// Math utils
 
 int pow(int val, int power) {
     int i = 1;
@@ -65,6 +111,14 @@ int pow(int val, int power) {
 
 int max(int a, int b) {
     if (a > b) {
+        return a;
+    } else {
+        return b;
+    }
+}
+
+int min(int a, int b) {
+    if (a < b) {
         return a;
     } else {
         return b;
