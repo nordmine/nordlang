@@ -13,10 +13,10 @@ import ru.nordmine.nordlang.syntax.expressions.operators.Access;
 import ru.nordmine.nordlang.syntax.expressions.operators.BinaryOperator;
 import ru.nordmine.nordlang.syntax.expressions.operators.UnaryOperator;
 import ru.nordmine.nordlang.syntax.statements.*;
+import ru.nordmine.nordlang.syntax.statements.Set;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Parser {
 
@@ -49,8 +49,8 @@ public class Parser {
                 }
                 move();
             }
-            if (signatures.contains(methodInfo.getName())) {
-                throw new SyntaxException(line, "method '" + methodInfo.getName() + "()' already defined");
+            if (signatures.containsMethodName(methodInfo.getName())) {
+                throw new SyntaxException(line, "method with name '" + methodInfo.getName() + "' already defined");
             }
             signatures.putMethod(methodInfo);
             move();
@@ -73,10 +73,9 @@ public class Parser {
             program.fixLabel(after);
             checkForMissingReturn(program, after);
         }
-        MethodInfo mainMethodInfo = signatures.getMainMethod();
-        if (mainMethodInfo == null) {
-            throw new SyntaxException(line, "method 'int main()' not found");
-        }
+        MethodInfo mainMethodInfo = signatures.getMethodByParamTypes("main", Collections.emptyList())
+                .orElseThrow(() -> new SyntaxException(line, "method int main() is not defined"));
+
         program.setStartCommandIndex(mainMethodInfo.getBeginLabel().getDstPosition());
         return program;
     }
@@ -93,7 +92,7 @@ public class Parser {
 
     private Statement method() throws SyntaxException {
         MethodInfo methodInfo = readMethodSignature();
-        currentMethod = signatures.getMethodByName(methodInfo.getName()); // todo лишнее действие
+        currentMethod = signatures.getMethodByParamList(methodInfo.getName(), methodInfo.getParams()).get();
         top = new ParserScope(null);
         List<VariableExpression> paramExprList = new ArrayList<>();
         Statement s = Statement.EMPTY;
@@ -423,18 +422,26 @@ public class Parser {
                     String methodName = wordToken.getLexeme();
                     move();
                     List<Expression> paramExpressions = new ArrayList<>();
+                    List<TypeToken> paramTypes = new ArrayList<>();
                     while (look.getTag() != Tag.CLOSE_BRACKET) {
-                        paramExpressions.add(bool());
+                        Expression paramExpr = bool();
+                        paramTypes.add(paramExpr.getType());
+                        paramExpressions.add(paramExpr);
                         if (look.getTag() != Tag.COMMA) {
                             break;
                         }
                         match(Tag.COMMA);
                     }
                     match(Tag.CLOSE_BRACKET);
-                    if (!signatures.contains(methodName)) {
-                        error(String.format("method '%s()' is not defined", methodName));
-                    }
-                    MethodInfo methodInfo = signatures.getMethodByName(methodName);
+                    MethodInfo methodInfo = signatures.getMethodByParamTypes(methodName, paramTypes)
+                            .orElseThrow(() -> {
+                                String typeList = paramTypes.stream()
+                                        .map(WordToken::getLexeme)
+                                        .collect(Collectors.joining(", "));
+                                return new SyntaxException(
+                                        line, String.format("method %s(%s) is not defined", methodName, typeList)
+                                );
+                            });
                     return new MethodCallExpression(line, wordToken, methodInfo, paramExpressions);
                 } else {
                     VariableExpression variable = top.get(wordToken);

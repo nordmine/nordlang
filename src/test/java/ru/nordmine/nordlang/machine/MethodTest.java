@@ -45,10 +45,43 @@ public class MethodTest extends MachineTest {
 
     @Test(
             expectedExceptions = SyntaxException.class,
-            expectedExceptionsMessageRegExp = "Syntax error at line 1: method 'test\\(\\)' is not defined"
+            expectedExceptionsMessageRegExp = "Syntax error at line 1: method test\\(\\) is not defined"
     )
     public void methodNotFound() throws LangException {
         getResult("int main() { return test(); }");
+    }
+
+    @Test(
+            expectedExceptions = SyntaxException.class,
+            expectedExceptionsMessageRegExp = "Syntax error at line 1: method test\\(char\\) is not defined"
+    )
+    public void wrongTypeInSignature() throws LangException {
+        getResult("int main() { return test('a'); }\r\nint test(int a) { return 0;}");
+    }
+
+    @Test(
+            expectedExceptions = SyntaxException.class,
+            expectedExceptionsMessageRegExp = "Syntax error at line 1: method test\\(int\\) is not defined"
+    )
+    public void lessThanRequiredParamCountInSignature() throws LangException {
+        getResult("int main() { return test(1); } int test(int a, char b) { return 0;}");
+    }
+
+    @Test(
+            expectedExceptions = SyntaxException.class,
+            expectedExceptionsMessageRegExp = "Syntax error at line 1: method test\\(int, char, bool\\) is not defined"
+    )
+    public void greaterThanRequiredParamCountInSignature() throws LangException {
+        getResult("int main() { return test(1, 'b', true); } int test(int a, char b) { return 0;}");
+    }
+
+
+    @Test(
+            expectedExceptions = SyntaxException.class,
+            expectedExceptionsMessageRegExp = "Syntax error at line 3: method with name 'test' already defined"
+    )
+    public void methodNameDuplication() throws LangException {
+        getResult("int main() { return test(1); }\nint test(int a, int b) { return 0;}\nint test(int a) { return 0;}");
     }
 
     @Test(
@@ -69,7 +102,7 @@ public class MethodTest extends MachineTest {
 
     @Test(
             expectedExceptions = SyntaxException.class,
-            expectedExceptionsMessageRegExp = "Syntax error at line 1: method 'int main\\(\\)' not found"
+            expectedExceptionsMessageRegExp = "Syntax error at line 1: method int main\\(\\) is not defined"
     )
     public void methodMainNotFound() throws LangException {
         getResult("string getMessage() { return \"Превед\"; }");
