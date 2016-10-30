@@ -10,6 +10,39 @@ int main() {
 
 // String utils
 
+string trim(string source) {
+    return trimLeft(trimRight(source));
+}
+
+string trimLeft(string source) {
+    int len = size(source);
+    int i = 0;
+    string trimmed = "";
+    while(i < len and source[i] == ' ') {
+        i = i + 1;
+    }
+    while(i < len) {
+        trimmed = trimmed + source[i];
+        i = i + 1;
+    }
+    return trimmed;
+}
+
+string trimRight(string source) {
+    int len = size(source);
+    int i = len - 1;
+    string trimmed = "";
+    while(i >= 0 and source[i] == ' ') {
+        i = i - 1;
+    }
+    int j = 0;
+    while(j <= i) {
+        trimmed = trimmed + source[j];
+        j = j + 1;
+    }
+    return trimmed;
+}
+
 string implode(string[] parts, string glue) {
     int len = size(parts);
     int i = 0;
