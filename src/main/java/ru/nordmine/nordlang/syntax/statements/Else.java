@@ -1,5 +1,6 @@
 package ru.nordmine.nordlang.syntax.statements;
 
+import ru.nordmine.nordlang.machine.Label;
 import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 import ru.nordmine.nordlang.syntax.ParserUtils;
 import ru.nordmine.nordlang.syntax.expressions.Expression;
@@ -22,10 +23,10 @@ public class Else extends Statement {
     }
 
     @Override
-    public void gen(Program program, int begin, int after) {
-        int label1 = program.newLabel();
-        int label2 = program.newLabel();
-        expr.jumping(program, 0, label2);
+    public void gen(Program program, Label begin, Label after) {
+        Label label1 = program.newLabel();
+        Label label2 = program.newLabel();
+        expr.jumping(program, Label.EMPTY, label2);
         program.fixLabel(label1);
         statement1.gen(program, label1, after);
         program.addGotoCommand(after);

@@ -1,5 +1,6 @@
 package ru.nordmine.nordlang.syntax.expressions.logical;
 
+import ru.nordmine.nordlang.machine.Label;
 import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 import ru.nordmine.nordlang.lexer.Token;
 import ru.nordmine.nordlang.lexer.TypeToken;
@@ -8,12 +9,12 @@ import ru.nordmine.nordlang.machine.value.BoolValue;
 import ru.nordmine.nordlang.syntax.ParserUtils;
 import ru.nordmine.nordlang.syntax.expressions.Expression;
 
-public abstract class Logical extends Expression {
+public abstract class LogicalExpression extends Expression {
 
     protected Expression left;
     protected Expression right;
 
-    public Logical(int line, Token token, Expression left, Expression right) throws SyntaxException {
+    public LogicalExpression(int line, Token token, Expression left, Expression right) throws SyntaxException {
         super(line, token, null);
         this.left = left;
         this.right = right;
@@ -33,14 +34,14 @@ public abstract class Logical extends Expression {
 
     @Override
     public void gen(Program program) {
-        int f = program.newLabel();
-        int a = program.newLabel();
-        this.jumping(program, 0, f);
+        Label falseLabel = program.newLabel();
+        Label after = program.newLabel();
+        this.jumping(program, Label.EMPTY, falseLabel);
         program.addPushCommand(BoolValue.TRUE);
-        program.addGotoCommand(a);
-        program.fixLabel(f);
+        program.addGotoCommand(after);
+        program.fixLabel(falseLabel);
         program.addPushCommand(BoolValue.FALSE);
-        program.fixLabel(a);
+        program.fixLabel(after);
     }
 
     @Override

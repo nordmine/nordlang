@@ -12,7 +12,7 @@ public class MethodInfo {
     private final TypeToken returnType;
     private final String name;
     private final List<ParamInfo> params = new ArrayList<>();
-    private Label beginLabel;
+    private final Label beginLabel = new Label();
 
     public MethodInfo(TypeToken returnType, String name) {
         this.returnType = returnType;
@@ -37,10 +37,6 @@ public class MethodInfo {
 
     public Label getBeginLabel() {
         return beginLabel;
-    }
-
-    public void setBeginLabel(Label beginLabel) {
-        this.beginLabel = beginLabel;
     }
 
     @Override

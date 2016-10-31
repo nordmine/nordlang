@@ -4,6 +4,7 @@ import ru.nordmine.nordlang.lexer.types.IntValueToken;
 import ru.nordmine.nordlang.lexer.Token;
 import ru.nordmine.nordlang.lexer.types.ValueToken;
 import ru.nordmine.nordlang.lexer.WordToken;
+import ru.nordmine.nordlang.machine.Label;
 import ru.nordmine.nordlang.machine.Program;
 import ru.nordmine.nordlang.lexer.TypeToken;
 import ru.nordmine.nordlang.machine.value.BoolValue;
@@ -22,10 +23,10 @@ public class ConstantExpression extends Expression {
     public static final ConstantExpression FALSE = new ConstantExpression(0, WordToken.FALSE, TypeToken.BOOL);
 
     @Override
-    public void jumping(Program program, int trueLabel, int falseLabel) {
-        if (this == TRUE && trueLabel != 0) {
+    public void jumping(Program program, Label trueLabel, Label falseLabel) {
+        if (this == TRUE && trueLabel != Label.EMPTY) {
             program.addGotoCommand(trueLabel);
-        } else if (this == FALSE && falseLabel != 0) {
+        } else if (this == FALSE && falseLabel != Label.EMPTY) {
             program.addGotoCommand(falseLabel);
         }
     }

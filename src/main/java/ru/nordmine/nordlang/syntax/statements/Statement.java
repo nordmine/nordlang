@@ -1,5 +1,6 @@
 package ru.nordmine.nordlang.syntax.statements;
 
+import ru.nordmine.nordlang.machine.Label;
 import ru.nordmine.nordlang.machine.Program;
 
 public class Statement {
@@ -17,8 +18,8 @@ public class Statement {
         return line;
     }
 
-    protected int after = 0;
+    protected Label after = Label.EMPTY;
 
     // вызывается с метками начала и после конструкции
-    public void gen(Program program, int begin, int after) {}
+    public void gen(Program program, Label begin, Label after) {}
 }

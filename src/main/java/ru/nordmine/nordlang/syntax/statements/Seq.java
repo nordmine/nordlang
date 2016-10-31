@@ -1,5 +1,6 @@
 package ru.nordmine.nordlang.syntax.statements;
 
+import ru.nordmine.nordlang.machine.Label;
 import ru.nordmine.nordlang.machine.Program;
 
 public class Seq extends Statement {
@@ -14,13 +15,13 @@ public class Seq extends Statement {
     }
 
     @Override
-    public void gen(Program program, int begin, int after) {
+    public void gen(Program program, Label begin, Label after) {
         if (statement1 == Statement.EMPTY) {
             statement2.gen(program, begin, after);
         } else if (statement2 == Statement.EMPTY) {
             statement1.gen(program, begin, after);
         } else {
-            int label = program.newLabel();
+            Label label = program.newLabel();
             statement1.gen(program, begin, label);
             program.fixLabel(label);
             statement2.gen(program, label, after);

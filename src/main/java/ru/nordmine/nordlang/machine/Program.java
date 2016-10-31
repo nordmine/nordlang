@@ -9,32 +9,26 @@ import java.util.List;
 public class Program {
 
     private final List<Command> commands = new ArrayList<>();
-    private final List<Label> labelMap = new ArrayList<>();
     private int startCommandIndex = -1;
-
-    public Program() {
-        // метка 0 не используется
-        labelMap.add(new Label());
-    }
 
     public void add(Command command) {
         commands.add(command);
     }
 
-    public void addGotoCommand(int labelIndex) {
-        commands.add(new GotoCommand(labelMap.get(labelIndex)));
+    public void addGotoCommand(Label label) {
+        commands.add(new GotoCommand(label));
     }
 
     public void addPushCommand(Value value) {
         commands.add(new PushCommand(value));
     }
 
-    public void addIfCommand(int labelIndex) {
-        commands.add(new IfCommand(labelMap.get(labelIndex)));
+    public void addIfCommand(Label label) {
+        commands.add(new IfCommand(label));
     }
 
-    public void addIfFalseCommand(int labelIndex) {
-        commands.add(new IfFalseCommand(labelMap.get(labelIndex)));
+    public void addIfFalseCommand(Label label) {
+        commands.add(new IfFalseCommand(label));
     }
 
     public void addReturnCommand() {
@@ -45,17 +39,12 @@ public class Program {
         commands.add(new ExitCommand());
     }
 
-    public int newLabel() {
-        labelMap.add(new Label());
-        return labelMap.size() - 1;
+    public Label newLabel() {
+        return new Label();
     }
 
-    public void fixLabel(int labelIndex) {
-        labelMap.get(labelIndex).setDstPosition(commands.size());
-    }
-
-    public Label getLabel(int labelIndex) {
-        return labelMap.get(labelIndex);
+    public void fixLabel(Label label) {
+        label.fix(commands.size());
     }
 
     public int getStartCommandIndex() {

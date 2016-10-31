@@ -6,7 +6,7 @@ import ru.nordmine.nordlang.machine.MachineState;
 
 public class GotoCommand extends Command {
 
-    private Label label;
+    private final Label label;
 
     public GotoCommand(Label label) {
         this.label = label;
@@ -14,7 +14,7 @@ public class GotoCommand extends Command {
 
     @Override
     public void execute(MachineState state) throws RunException {
-        state.setCmdIndex(label.getDstPosition());
+        state.setCmdIndex(label.getPosition());
     }
 
     @Override

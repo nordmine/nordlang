@@ -1,5 +1,6 @@
 package ru.nordmine.nordlang.syntax.expressions.operators;
 
+import ru.nordmine.nordlang.machine.Label;
 import ru.nordmine.nordlang.syntax.expressions.Expression;
 import ru.nordmine.nordlang.syntax.expressions.VariableExpression;
 import ru.nordmine.nordlang.lexer.Tag;
@@ -8,12 +9,12 @@ import ru.nordmine.nordlang.machine.Program;
 import ru.nordmine.nordlang.machine.commands.AccessCommand;
 import ru.nordmine.nordlang.lexer.TypeToken;
 
-public class Access extends Expression {
+public class AccessExpression extends Expression {
 
     private VariableExpression array;
     private Expression index;
 
-    public Access(int line, VariableExpression array, Expression index, TypeToken type) {
+    public AccessExpression(int line, VariableExpression array, Expression index, TypeToken type) {
         super(line, new WordToken(Tag.INDEX, "[]"), type);
         this.array = array;
         this.index = index;
@@ -34,7 +35,7 @@ public class Access extends Expression {
     }
 
     @Override
-    public void jumping(Program program, int trueLabel, int falseLabel) {
+    public void jumping(Program program, Label trueLabel, Label falseLabel) {
         emitJumps(program, trueLabel, falseLabel);
     }
 

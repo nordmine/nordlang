@@ -7,12 +7,12 @@ import ru.nordmine.nordlang.lexer.Token;
 import ru.nordmine.nordlang.machine.Program;
 import ru.nordmine.nordlang.machine.commands.BinaryCommand;
 
-public class BinaryOperator extends Expression {
+public class BinaryExpression extends Expression {
 
     private Expression left;
     private Expression right;
 
-    public BinaryOperator(int line, Token token, Expression left, Expression right) throws SyntaxException {
+    public BinaryExpression(int line, Token token, Expression left, Expression right) throws SyntaxException {
         super(line, token, null);
         this.left = left;
         this.right = right;

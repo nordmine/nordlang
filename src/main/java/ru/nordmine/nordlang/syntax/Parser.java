@@ -1,17 +1,18 @@
 package ru.nordmine.nordlang.syntax;
 
 import ru.nordmine.nordlang.lexer.*;
+import ru.nordmine.nordlang.machine.Label;
 import ru.nordmine.nordlang.machine.Program;
 import ru.nordmine.nordlang.machine.value.Value;
 import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 import ru.nordmine.nordlang.syntax.expressions.*;
-import ru.nordmine.nordlang.syntax.expressions.logical.And;
-import ru.nordmine.nordlang.syntax.expressions.logical.Not;
-import ru.nordmine.nordlang.syntax.expressions.logical.Or;
-import ru.nordmine.nordlang.syntax.expressions.logical.Rel;
-import ru.nordmine.nordlang.syntax.expressions.operators.Access;
-import ru.nordmine.nordlang.syntax.expressions.operators.BinaryOperator;
-import ru.nordmine.nordlang.syntax.expressions.operators.UnaryOperator;
+import ru.nordmine.nordlang.syntax.expressions.logical.AndExpression;
+import ru.nordmine.nordlang.syntax.expressions.logical.NotExpression;
+import ru.nordmine.nordlang.syntax.expressions.logical.OrExpression;
+import ru.nordmine.nordlang.syntax.expressions.logical.RelExpression;
+import ru.nordmine.nordlang.syntax.expressions.operators.AccessExpression;
+import ru.nordmine.nordlang.syntax.expressions.operators.BinaryExpression;
+import ru.nordmine.nordlang.syntax.expressions.operators.UnaryExpression;
 import ru.nordmine.nordlang.syntax.statements.*;
 import ru.nordmine.nordlang.syntax.statements.Set;
 
@@ -64,11 +65,11 @@ public class Parser {
         move();
         while (look.getTag() == Tag.BASIC) {
             hasReturnStatement = false;
-            int begin = program.newLabel();
-            int after = program.newLabel();
-            program.fixLabel(begin); // todo изменить механизм отложенного проставления меток
+            Label begin = program.newLabel();
+            Label after = program.newLabel();
+            program.fixLabel(begin);
             Statement s = method();
-            currentMethod.setBeginLabel(program.getLabel(begin));
+            program.fixLabel(currentMethod.getBeginLabel());
             s.gen(program, begin, after);
             program.fixLabel(after);
             checkForMissingReturn(program, after);
@@ -76,14 +77,14 @@ public class Parser {
         MethodInfo mainMethodInfo = signatures.getMethodByParamTypes("main", Collections.emptyList())
                 .orElseThrow(() -> new SyntaxException(line, "method int main() is not defined"));
 
-        program.setStartCommandIndex(mainMethodInfo.getBeginLabel().getDstPosition());
+        program.setStartCommandIndex(mainMethodInfo.getBeginLabel().getPosition());
         return program;
     }
 
-    private void checkForMissingReturn(Program program, int afterLabelIndex) throws SyntaxException {
+    private void checkForMissingReturn(Program program, Label afterLabel) throws SyntaxException {
         // todo улучшить контроль за наличием возвращаемых значений
         long missingReturnCount = program.getCommands().stream()
-                .filter(c -> c.getDestinationLabel() == program.getLabel(afterLabelIndex))
+                .filter(c -> c.getDestinationLabel() == afterLabel)
                 .count();
         if (missingReturnCount > 0 || !hasReturnStatement) {
             throw new SyntaxException(line, "missing return statement");
@@ -244,7 +245,7 @@ public class Parser {
         int inner = 0;
         while (look.getTag() != Tag.CLOSE_SQUARE) { // одна итерация - один элемент массива
             TypeToken type = t.getArrayType();
-            Access x = new Access(line, variable, new ConstantExpression(line, inner), type);
+            AccessExpression x = new AccessExpression(line, variable, new ConstantExpression(line, inner), type);
             statement = new Seq(line, statement, new SetElem(line, x, bool()));
             inner++;
             if (look.getTag() != Tag.COMMA) {
@@ -291,7 +292,7 @@ public class Parser {
             move();
             statement = new Set(line, variable, bool());
         } else {
-            Access x = offset(variable);
+            AccessExpression x = offset(variable);
             match(Tag.ASSIGN);
             statement = new SetElem(line, x, bool());
         }
@@ -304,7 +305,7 @@ public class Parser {
         while (look.getTag() == Tag.OR) {
             Token token = look;
             move();
-            x = new Or(line, token, x, join());
+            x = new OrExpression(line, token, x, join());
         }
         return x;
     }
@@ -314,7 +315,7 @@ public class Parser {
         while (look.getTag() == Tag.AND) {
             Token token = look;
             move();
-            x = new And(line, token, x, equality());
+            x = new AndExpression(line, token, x, equality());
         }
         return x;
     }
@@ -324,7 +325,7 @@ public class Parser {
         while (look.getTag() == Tag.EQUAL || look.getTag() == Tag.NOT_EQUAL) {
             Token token = look;
             move();
-            x = new Rel(line, token, x, rel());
+            x = new RelExpression(line, token, x, rel());
         }
         return x;
     }
@@ -338,7 +339,7 @@ public class Parser {
             case GREATER:
                 Token token = look;
                 move();
-                return new Rel(line, token, x, expr());
+                return new RelExpression(line, token, x, expr());
             default:
                 return x;
         }
@@ -349,7 +350,7 @@ public class Parser {
         while (look.getTag() == Tag.PLUS || look.getTag() == Tag.MINUS) {
             Token token = look;
             move();
-            x = new BinaryOperator(line, token, x, term());
+            x = new BinaryExpression(line, token, x, term());
         }
         return x;
     }
@@ -359,7 +360,7 @@ public class Parser {
         while (look.getTag() == Tag.MUL || look.getTag() == Tag.DIVISION || look.getTag() == Tag.MOD) {
             Token token = look;
             move();
-            x = new BinaryOperator(line, token, x, unary());
+            x = new BinaryExpression(line, token, x, unary());
         }
         return x;
     }
@@ -367,11 +368,11 @@ public class Parser {
     private Expression unary() throws SyntaxException {
         if (look.getTag() == Tag.MINUS) {
             move();
-            return new UnaryOperator(line, WordToken.UNARY_MINUS, unary());
+            return new UnaryExpression(line, WordToken.UNARY_MINUS, unary());
         } else if (look.getTag() == Tag.NOT) {
             Token token = look;
             move();
-            return new Not(line, token, unary());
+            return new NotExpression(line, token, unary());
         } else {
             return factor();
         }
@@ -460,7 +461,7 @@ public class Parser {
         }
     }
 
-    private Access offset(VariableExpression a) throws SyntaxException {
+    private AccessExpression offset(VariableExpression a) throws SyntaxException {
         // todo избавиться от костылей для строки
         TypeToken type = a.getType();
         if (type != TypeToken.STRING && type.getTag() == Tag.BASIC) {
@@ -470,10 +471,10 @@ public class Parser {
         Expression indexExpr = bool();
         match(Tag.CLOSE_SQUARE);
         if (type == TypeToken.STRING) {
-            return new Access(line, a, indexExpr, TypeToken.CHAR);
+            return new AccessExpression(line, a, indexExpr, TypeToken.CHAR);
         } else {
             type = ((ArrayToken) type).getArrayType();
-            return new Access(line, a, indexExpr, type);
+            return new AccessExpression(line, a, indexExpr, type);
         }
     }
 

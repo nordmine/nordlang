@@ -7,7 +7,7 @@ import ru.nordmine.nordlang.machine.value.BoolValue;
 
 public class IfCommand extends Command {
 
-    private Label label;
+    private final Label label;
 
     public IfCommand(Label label) {
         this.label = label;
@@ -16,7 +16,7 @@ public class IfCommand extends Command {
     @Override
     public void execute(MachineState state) throws RunException {
         if (state.getValueStack().pop() == BoolValue.TRUE) {
-            state.setCmdIndex(label.getDstPosition());
+            state.setCmdIndex(label.getPosition());
         } else {
             state.incrementCmdIndex();
         }

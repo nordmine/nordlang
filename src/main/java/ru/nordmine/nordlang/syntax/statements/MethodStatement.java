@@ -1,7 +1,7 @@
 package ru.nordmine.nordlang.syntax.statements;
 
+import ru.nordmine.nordlang.machine.Label;
 import ru.nordmine.nordlang.machine.Program;
-import ru.nordmine.nordlang.machine.commands.PushScopeCommand;
 import ru.nordmine.nordlang.machine.commands.SetCommand;
 import ru.nordmine.nordlang.syntax.expressions.VariableExpression;
 
@@ -19,7 +19,7 @@ public class MethodStatement extends Statement {
     }
 
     @Override
-    public void gen(Program program, int begin, int after) {
+    public void gen(Program program, Label begin, Label after) {
         for (int i = paramExprList.size(); i > 0; i--) {
             program.add(new SetCommand(paramExprList.get(i - 1).getUniqueIndex()));
         }

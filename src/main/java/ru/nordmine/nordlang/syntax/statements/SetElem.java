@@ -1,8 +1,9 @@
 package ru.nordmine.nordlang.syntax.statements;
 
+import ru.nordmine.nordlang.machine.Label;
 import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 import ru.nordmine.nordlang.syntax.ParserUtils;
-import ru.nordmine.nordlang.syntax.expressions.operators.Access;
+import ru.nordmine.nordlang.syntax.expressions.operators.AccessExpression;
 import ru.nordmine.nordlang.syntax.expressions.Expression;
 import ru.nordmine.nordlang.syntax.expressions.VariableExpression;
 import ru.nordmine.nordlang.machine.Program;
@@ -14,7 +15,7 @@ public class SetElem extends Statement {
     private Expression index;
     private Expression expr;
 
-    public SetElem(int line, Access x, Expression expr) throws SyntaxException {
+    public SetElem(int line, AccessExpression x, Expression expr) throws SyntaxException {
         super(line);
         this.array = x.getArray();
         this.index = x.getIndex();
@@ -25,7 +26,7 @@ public class SetElem extends Statement {
     }
 
     @Override
-    public void gen(Program program, int begin, int after) {
+    public void gen(Program program, Label begin, Label after) {
         expr.gen(program);
         index.gen(program);
         program.add(new SetElemCommand(array.getUniqueIndex()));

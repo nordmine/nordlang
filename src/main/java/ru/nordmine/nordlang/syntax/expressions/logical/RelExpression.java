@@ -1,5 +1,6 @@
 package ru.nordmine.nordlang.syntax.expressions.logical;
 
+import ru.nordmine.nordlang.machine.Label;
 import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 import ru.nordmine.nordlang.syntax.expressions.Expression;
 import ru.nordmine.nordlang.lexer.Token;
@@ -8,9 +9,9 @@ import ru.nordmine.nordlang.machine.commands.BinaryCommand;
 import ru.nordmine.nordlang.lexer.ArrayToken;
 import ru.nordmine.nordlang.lexer.TypeToken;
 
-public class Rel extends Logical {
+public class RelExpression extends LogicalExpression {
 
-    public Rel(int line, Token token, Expression left, Expression right) throws SyntaxException {
+    public RelExpression(int line, Token token, Expression left, Expression right) throws SyntaxException {
         super(line, token, left, right);
     }
 
@@ -26,7 +27,7 @@ public class Rel extends Logical {
     }
 
     @Override
-    public void jumping(Program program, int trueLabel, int falseLabel) {
+    public void jumping(Program program, Label trueLabel, Label falseLabel) {
         left.gen(program);
         right.gen(program);
         program.add(new BinaryCommand(operand.getTag()));

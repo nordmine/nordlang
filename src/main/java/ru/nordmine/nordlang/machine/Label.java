@@ -2,18 +2,20 @@ package ru.nordmine.nordlang.machine;
 
 public class Label {
 
-    private int dstPosition = -1;
+    public static final Label EMPTY = new Label();
 
-    public int getDstPosition() {
-        return dstPosition;
+    private int position = -1;
+
+    public int getPosition() {
+        return position;
     }
 
-    public void setDstPosition(int dstPosition) {
-        this.dstPosition = dstPosition;
+    public void fix(int dstPosition) {
+        this.position = dstPosition;
     }
 
     @Override
     public String toString() {
-        return "-> " + dstPosition;
+        return "-> " + position;
     }
 }

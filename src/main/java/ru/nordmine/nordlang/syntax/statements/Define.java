@@ -1,5 +1,6 @@
 package ru.nordmine.nordlang.syntax.statements;
 
+import ru.nordmine.nordlang.machine.Label;
 import ru.nordmine.nordlang.machine.Program;
 import ru.nordmine.nordlang.machine.commands.DefineCommand;
 import ru.nordmine.nordlang.machine.value.Value;
@@ -17,7 +18,7 @@ public class Define extends Statement {
     }
 
     @Override
-    public void gen(Program program, int begin, int after) {
+    public void gen(Program program, Label begin, Label after) {
         program.add(new DefineCommand(variable.getUniqueIndex(), initialValue));
     }
 }

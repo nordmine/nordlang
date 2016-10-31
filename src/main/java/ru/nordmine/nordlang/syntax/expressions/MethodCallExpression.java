@@ -23,6 +23,6 @@ public class MethodCallExpression extends Expression {
         for (Expression expr : paramExpressions) {
             expr.gen(program);
         }
-        program.add(new MethodCallCommand(methodInfo));
+        program.add(new MethodCallCommand(methodInfo.getBeginLabel()));
     }
 }

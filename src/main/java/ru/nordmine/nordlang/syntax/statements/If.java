@@ -1,5 +1,6 @@
 package ru.nordmine.nordlang.syntax.statements;
 
+import ru.nordmine.nordlang.machine.Label;
 import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 import ru.nordmine.nordlang.syntax.ParserUtils;
 import ru.nordmine.nordlang.syntax.expressions.Expression;
@@ -21,9 +22,9 @@ public class If extends Statement {
     }
 
     @Override
-    public void gen(Program program, int begin, int after) {
-        int label = program.newLabel();
-        expr.jumping(program, 0, after); // Проходим при значении true, проход к метке a при значении false
+    public void gen(Program program, Label begin, Label after) {
+        Label label = program.newLabel();
+        expr.jumping(program, Label.EMPTY, after); // Проходим при значении true, проход к метке a при значении false
         program.fixLabel(label);
         statement.gen(program, label, after);
     }

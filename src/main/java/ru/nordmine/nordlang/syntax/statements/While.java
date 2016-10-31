@@ -1,5 +1,6 @@
 package ru.nordmine.nordlang.syntax.statements;
 
+import ru.nordmine.nordlang.machine.Label;
 import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 import ru.nordmine.nordlang.syntax.ParserUtils;
 import ru.nordmine.nordlang.syntax.expressions.Expression;
@@ -26,10 +27,10 @@ public class While extends Statement {
     }
 
     @Override
-    public void gen(Program program, int begin, int after) {
+    public void gen(Program program, Label begin, Label after) {
         this.after = after;
-        expr.jumping(program, 0, after);
-        int label = program.newLabel();
+        expr.jumping(program, Label.EMPTY, after);
+        Label label = program.newLabel();
         program.fixLabel(label);
         statement.gen(program, label, begin);
         program.addGotoCommand(begin);

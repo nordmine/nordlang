@@ -9,11 +9,11 @@ import ru.nordmine.nordlang.machine.Program;
 import ru.nordmine.nordlang.machine.commands.NegateCommand;
 import ru.nordmine.nordlang.lexer.TypeToken;
 
-public class UnaryOperator extends Expression {
+public class UnaryExpression extends Expression {
 
     private Expression expr;
 
-    public UnaryOperator(int line, Token token, Expression x) throws SyntaxException {
+    public UnaryExpression(int line, Token token, Expression x) throws SyntaxException {
         super(line, token, null);
         expr = x;
         if (expr.getType() != TypeToken.INT) {
