@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 
 public class Parser {
 
+    public static final int NEW_LINE_CONSTANT_INDEX = 1000;
+
     private final String source;
     private Lexer lexer;
     private Token look; // предпросмотр
@@ -62,6 +64,11 @@ public class Parser {
         loadMethodSignatures();
         this.lexer = new Lexer(source);
         Program program = new Program();
+
+        top = new ParserScope(null);
+        WordToken wordToken = new WordToken(Tag.ID, "newLine");
+        top.put(wordToken, new VariableExpression(line, wordToken, TypeToken.STRING, NEW_LINE_CONSTANT_INDEX));
+
         move();
         while (look.getTag() == Tag.BASIC) {
             hasReturnStatement = false;
@@ -94,7 +101,8 @@ public class Parser {
     private Statement method() throws SyntaxException {
         MethodInfo methodInfo = readMethodSignature();
         currentMethod = signatures.getMethodByParamList(methodInfo.getName(), methodInfo.getParams()).get();
-        top = new ParserScope(null);
+        ParserScope parentScope = top;
+        top = new ParserScope(top);
         List<VariableExpression> paramExprList = new ArrayList<>();
         Statement s = Statement.EMPTY;
         for (ParamInfo paramInfo : currentMethod.getParams()) {
@@ -116,7 +124,7 @@ public class Parser {
         match(Tag.BEGIN_BLOCK);
         s = new Seq(line, s, new MethodStatement(line, paramExprList, statements()));
         match(Tag.END_BLOCK);
-        top = null;
+        top = parentScope;
         return s;
     }
 

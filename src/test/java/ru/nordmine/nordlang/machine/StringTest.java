@@ -18,7 +18,9 @@ public class StringTest extends MachineTest {
                 {"string name = \"Bob\"; echo \"Hello, \" + name;", "Hello, Bob"},
                 {"bool flag = false; echo \"Flag is \" + flag;", "Flag is false"},
                 {"char c = 's'; echo \"Text\" + c;", "Texts"},
-                {"int number = 100500; echo \"Number is \" + number;", "Number is 100500"}
+                {"int number = 100500; echo \"Number is \" + number;", "Number is 100500"},
+                {"echo newLine;", System.getProperty("line.separator")},
+                {"echo \"New line\" + newLine;", String.format("New line%n")}
         };
     }
 

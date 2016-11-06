@@ -1,7 +1,9 @@
 package ru.nordmine.nordlang.machine;
 
 import ru.nordmine.nordlang.machine.exceptions.RunException;
+import ru.nordmine.nordlang.machine.value.StringValue;
 import ru.nordmine.nordlang.machine.value.Value;
+import ru.nordmine.nordlang.syntax.Parser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +16,7 @@ public class MachineScope {
     public MachineScope(MachineScope parent) {
         this.parent = parent;
         this.values = new HashMap<>();
+        this.values.put(Parser.NEW_LINE_CONSTANT_INDEX, new StringValue(new StringBuilder(String.format("%n")))); // todo сделать нормальную поддержку констант
     }
 
     public MachineScope getParent() {

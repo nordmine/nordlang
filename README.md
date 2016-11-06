@@ -3,8 +3,13 @@ nordlang
 Пример скрипта:
 ```C#
 int main() {
-    string text = "Some Text";
-    echo text + ':' + toUpper(text) + ',' + toLower(text);
+    string text = "    Some Text    ";
+    string trimmedText = trim(text);
+    echo "Original: *" + text + "*" + newLine;
+    echo "Trimmed: *" + trimmedText + "*" + newLine;
+    echo "Reversed: " + reverseString(trimmedText) + newLine;
+    echo "Upper: " + toUpper(trimmedText) + newLine;
+    echo "Lower: " + toLower(trimmedText) + newLine;
     return 0;
 }
 
@@ -19,11 +24,11 @@ string trimLeft(string source) {
     int i = 0;
     string trimmed = "";
     while(i < len and source[i] == ' ') {
-        i = i + 1;
+        i++;
     }
     while(i < len) {
         trimmed = trimmed + source[i];
-        i = i + 1;
+        i++;
     }
     return trimmed;
 }
@@ -33,12 +38,12 @@ string trimRight(string source) {
     int i = len - 1;
     string trimmed = "";
     while(i >= 0 and source[i] == ' ') {
-        i = i - 1;
+        i--;
     }
     int j = 0;
     while(j <= i) {
         trimmed = trimmed + source[j];
-        j = j + 1;
+        j++;
     }
     return trimmed;
 }
@@ -52,7 +57,7 @@ string implode(string[] parts, string glue) {
         if (i < len - 1) {
             joined = joined + glue;
         }
-        i = i + 1;
+        i++;
     }
     return joined;
 }
@@ -63,7 +68,7 @@ string reverseString(string original) {
     int i = len - 1;
     while(i >= 0) {
         result = result + original[i];
-        i = i - 1;
+        i--;
     }
     return result;
 }
@@ -75,7 +80,7 @@ int findChar(char c, string where) {
         if (where[i] == c) {
             return i;
         }
-        i = i + 1;
+        i++;
     }
     return -1;
 }
@@ -86,7 +91,7 @@ string toUpper(string original) {
     string upper = "";
     while(i < len) {
         upper = upper + toUpperChar(original[i]);
-        i = i + 1;
+        i++;
     }
     return upper;
 }
@@ -107,7 +112,7 @@ string toLower(string original) {
     string lower = "";
     while(i < len) {
         lower = lower + toLowerChar(original[i]);
-        i = i + 1;
+        i++;
     }
     return lower;
 }
@@ -137,7 +142,7 @@ int pow(int val, int power) {
     int result = val;
     while(i < power) {
         result = result * val;
-        i = i + 1;
+        i++;
     }
     return result;
 }
@@ -164,4 +169,3 @@ int abs(int val) {
     }
     return val;
 }
-```
