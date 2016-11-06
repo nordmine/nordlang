@@ -56,6 +56,20 @@ public class LexerTest {
     }
 
     @Test
+    public void increment() throws SyntaxException {
+        lexer = new Lexer("+ ++");
+        assertEquals(nextTag(), Tag.PLUS);
+        assertEquals(nextTag(), Tag.INCREMENT);
+    }
+
+    @Test
+    public void decrement() throws SyntaxException {
+        lexer = new Lexer("- --");
+        assertEquals(nextTag(), Tag.MINUS);
+        assertEquals(nextTag(), Tag.DECREMENT);
+    }
+
+    @Test
     public void inlineCommentOnly() throws SyntaxException {
         lexer = new Lexer("//i");
         assertEquals(nextTag(), Tag.END_OF_FILE);

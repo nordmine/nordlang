@@ -24,6 +24,8 @@ public enum Tag {
     STRING,
 
     /* math signs */
+    INCREMENT,
+    DECREMENT,
     PLUS,
     MINUS,
     MUL,

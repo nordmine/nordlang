@@ -134,8 +134,16 @@ public class Lexer {
                         return new Token(Tag.GREATER);
                     }
                 case '+':
+                    if (nextIs('+')) {
+                        nextChar();
+                        return WordToken.INCREMENT;
+                    }
                     return new Token(Tag.PLUS);
                 case '-':
+                    if (nextIs('-')) {
+                        nextChar();
+                        return WordToken.DECREMENT;
+                    }
                     return new Token(Tag.MINUS);
                 case '*':
                     return new Token(Tag.MUL);

@@ -213,6 +213,7 @@ public class Parser {
                 hasReturnStatement = true;
                 return new ReturnStatement(line, x, currentMethod);
             default:
+                // инструкция присваивания начинается с имени переменной, а не с ключевого слова
                 return assign();
         }
     }
@@ -280,25 +281,35 @@ public class Parser {
     }
 
     private Statement assign() throws SyntaxException {
-        Token t = look;
+        Token variableToken = look;
         match(Tag.ID);
-        VariableExpression variable = top.get(t);
+        VariableExpression variable = top.get(variableToken);
         if (variable == null) {
-            error(t.toString() + " undefined");
+            error(variableToken.toString() + " undefined");
         }
 
         Statement statement;
         if (look.getTag() == Tag.ASSIGN) {
             move();
             statement = new Set(line, variable, bool());
+        } else if (look.getTag() == Tag.INCREMENT) {
+            move();
+            Expression binExpr = new BinaryExpression(line, new Token(Tag.PLUS), variable, new ConstantExpression(line, 1));
+            statement = new Set(line, variable, binExpr);
+        } else if (look.getTag() == Tag.DECREMENT) {
+            move();
+            Expression binExpr = new BinaryExpression(line, new Token(Tag.MINUS), variable, new ConstantExpression(line, 1));
+            statement = new Set(line, variable, binExpr);
         } else {
-            AccessExpression x = offset(variable);
+            AccessExpression indexedVariable = offset(variable);
             match(Tag.ASSIGN);
-            statement = new SetElem(line, x, bool());
+            statement = new SetElem(line, indexedVariable, bool());
         }
         match(Tag.SEMICOLON);
         return statement;
     }
+
+    // Boolean operators
 
     private Expression bool() throws SyntaxException {
         Expression x = join();
@@ -344,6 +355,8 @@ public class Parser {
                 return x;
         }
     }
+
+    // Math operators
 
     private Expression expr() throws SyntaxException {
         Expression x = term();

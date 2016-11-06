@@ -10,6 +10,8 @@ public class WordToken extends Token {
     public static final WordToken NOT_EQUAL = new WordToken(Tag.NOT_EQUAL, "<>");
     public static final WordToken LESS_OR_EQUAL = new WordToken(Tag.LESS_OR_EQUAL, "<=");
     public static final WordToken GREATER_OR_EQUAL = new WordToken(Tag.GREATER_OR_EQUAL, ">=");
+    public static final WordToken INCREMENT = new WordToken(Tag.INCREMENT, "++");
+    public static final WordToken DECREMENT = new WordToken(Tag.DECREMENT, "--");
     public static final WordToken UNARY_MINUS = new WordToken(Tag.UNARY_MINUS, "minus");
     public static final WordToken TRUE = new WordToken(Tag.TRUE, "true");
     public static final WordToken FALSE = new WordToken(Tag.FALSE, "false");

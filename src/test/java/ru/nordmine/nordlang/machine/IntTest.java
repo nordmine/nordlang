@@ -17,7 +17,9 @@ public class IntTest extends MachineTest {
                 {"int[] v = [42,1]; echo v;", "[42,1]"},
                 {"int[] v = [42,1, 15]; echo v[2];", "15"},
                 {"int[] v = [42,1, 15]; v[2] = 18; echo v;", "[42,1,18]"},
-                {"int[] v1 = [42,1, 15]; int[] v2 = [3,4]; v1[2] = v2[1]; echo v1;", "[42,1,4]"}
+                {"int[] v1 = [42,1, 15]; int[] v2 = [3,4]; v1[2] = v2[1]; echo v1;", "[42,1,4]"},
+                {"int a = 3;\na++;\necho a;", "4"},
+                {"int a = 3;\na--;\necho a;", "2"}
         };
     }
 
