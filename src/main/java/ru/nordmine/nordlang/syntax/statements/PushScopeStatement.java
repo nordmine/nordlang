@@ -4,9 +4,9 @@ import ru.nordmine.nordlang.machine.Label;
 import ru.nordmine.nordlang.machine.Program;
 import ru.nordmine.nordlang.machine.commands.PushScopeCommand;
 
-public class PushScope extends Statement {
+public class PushScopeStatement extends Statement {
 
-    public PushScope(int line) {
+    public PushScopeStatement(int line) {
         super(line);
     }
 

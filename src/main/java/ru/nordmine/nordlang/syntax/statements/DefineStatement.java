@@ -6,12 +6,12 @@ import ru.nordmine.nordlang.machine.commands.DefineCommand;
 import ru.nordmine.nordlang.machine.value.Value;
 import ru.nordmine.nordlang.syntax.expressions.VariableExpression;
 
-public class Define extends Statement {
+public class DefineStatement extends Statement {
 
     private final VariableExpression variable;
     private final Value initialValue;
 
-    public Define(int line, VariableExpression variable, Value initialValue) {
+    public DefineStatement(int line, VariableExpression variable, Value initialValue) {
         super(line);
         this.variable = variable;
         this.initialValue = initialValue;

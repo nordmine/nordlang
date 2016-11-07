@@ -5,11 +5,11 @@ import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 import ru.nordmine.nordlang.machine.Program;
 import ru.nordmine.nordlang.syntax.ParserUtils;
 
-public class Break extends Statement {
+public class BreakStatement extends Statement {
 
     private Statement statement;
 
-    public Break(int line) throws SyntaxException {
+    public BreakStatement(int line) throws SyntaxException {
         super(line);
         if (Enclosing == null) {
             ParserUtils.throwError(getLine(), "unenclosed break");

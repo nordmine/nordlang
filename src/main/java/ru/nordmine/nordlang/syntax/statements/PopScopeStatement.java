@@ -4,9 +4,9 @@ import ru.nordmine.nordlang.machine.Label;
 import ru.nordmine.nordlang.machine.Program;
 import ru.nordmine.nordlang.machine.commands.PopScopeCommand;
 
-public class PopScope extends Statement {
+public class PopScopeStatement extends Statement {
 
-    public PopScope(int line) {
+    public PopScopeStatement(int line) {
         super(line);
     }
 

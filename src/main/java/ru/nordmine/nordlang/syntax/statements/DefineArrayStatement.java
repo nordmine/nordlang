@@ -6,13 +6,13 @@ import ru.nordmine.nordlang.machine.commands.DefineArrayCommand;
 import ru.nordmine.nordlang.machine.value.Value;
 import ru.nordmine.nordlang.syntax.expressions.VariableExpression;
 
-public class DefineArray extends Statement {
+public class DefineArrayStatement extends Statement {
 
     private final VariableExpression variable;
     private final Value initialValue;
     private final int initialSize;
 
-    public DefineArray(int line, VariableExpression variable, int initialSize, Value initialValue) {
+    public DefineArrayStatement(int line, VariableExpression variable, int initialSize, Value initialValue) {
         super(line);
         this.variable = variable;
         this.initialValue = initialValue;

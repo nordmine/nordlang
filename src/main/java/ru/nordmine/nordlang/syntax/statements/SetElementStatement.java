@@ -9,13 +9,13 @@ import ru.nordmine.nordlang.syntax.expressions.VariableExpression;
 import ru.nordmine.nordlang.machine.Program;
 import ru.nordmine.nordlang.machine.commands.SetElemCommand;
 
-public class SetElem extends Statement {
+public class SetElementStatement extends Statement {
 
     private VariableExpression array;
     private Expression index;
     private Expression expr;
 
-    public SetElem(int line, AccessExpression x, Expression expr) throws SyntaxException {
+    public SetElementStatement(int line, AccessExpression x, Expression expr) throws SyntaxException {
         super(line);
         this.array = x.getArray();
         this.index = x.getIndex();

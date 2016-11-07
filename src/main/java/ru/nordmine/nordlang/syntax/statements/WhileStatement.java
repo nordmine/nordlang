@@ -7,12 +7,12 @@ import ru.nordmine.nordlang.syntax.expressions.Expression;
 import ru.nordmine.nordlang.machine.Program;
 import ru.nordmine.nordlang.lexer.TypeToken;
 
-public class While extends Statement {
+public class WhileStatement extends Statement {
 
     private Expression expr;
     private Statement statement;
 
-    public While(int line) {
+    public WhileStatement(int line) {
         super(line);
         expr = null;
         statement = null;

@@ -7,12 +7,12 @@ import ru.nordmine.nordlang.syntax.expressions.Expression;
 import ru.nordmine.nordlang.machine.Program;
 import ru.nordmine.nordlang.lexer.TypeToken;
 
-public class Else extends Statement {
+public class ElseStatement extends Statement {
 
     private Expression expr;
     private Statement statement1, statement2;
 
-    public Else(int line, Expression expr, Statement statement1, Statement statement2) throws SyntaxException {
+    public ElseStatement(int line, Expression expr, Statement statement1, Statement statement2) throws SyntaxException {
         super(line);
         this.expr = expr;
         this.statement1 = statement1;

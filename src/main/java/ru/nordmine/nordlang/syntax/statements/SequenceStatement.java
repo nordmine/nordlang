@@ -3,12 +3,12 @@ package ru.nordmine.nordlang.syntax.statements;
 import ru.nordmine.nordlang.machine.Label;
 import ru.nordmine.nordlang.machine.Program;
 
-public class Seq extends Statement {
+public class SequenceStatement extends Statement {
 
     private Statement statement1;
     private Statement statement2;
 
-    public Seq(int line, Statement statement1, Statement statement2) {
+    public SequenceStatement(int line, Statement statement1, Statement statement2) {
         super(line);
         this.statement1 = statement1;
         this.statement2 = statement2;

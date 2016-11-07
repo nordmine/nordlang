@@ -14,7 +14,7 @@ import ru.nordmine.nordlang.syntax.expressions.operators.AccessExpression;
 import ru.nordmine.nordlang.syntax.expressions.operators.BinaryExpression;
 import ru.nordmine.nordlang.syntax.expressions.operators.UnaryExpression;
 import ru.nordmine.nordlang.syntax.statements.*;
-import ru.nordmine.nordlang.syntax.statements.Set;
+import ru.nordmine.nordlang.syntax.statements.SetStatement;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -112,17 +112,17 @@ public class Parser {
             Statement define;
             if (paramInfo.getType().getTag() == Tag.INDEX) {
                 Value initialValue = ParserUtils.getInitialValueByToken(line, ((ArrayToken) paramInfo.getType()).getArrayType());
-                define = new DefineArray(line, variable, 0, initialValue);
+                define = new DefineArrayStatement(line, variable, 0, initialValue);
             } else {
                 Value initialValue = ParserUtils.getInitialValueByToken(line, paramInfo.getType());
-                define = new Define(line, variable, initialValue); // todo initialValue реализовать в Value?
+                define = new DefineStatement(line, variable, initialValue); // todo initialValue реализовать в Value?
             }
-            s = new Seq(line, s, define);
+            s = new SequenceStatement(line, s, define);
 
             top.put(paramInfo.getId(), variable);
         }
         match(Tag.BEGIN_BLOCK);
-        s = new Seq(line, s, new MethodStatement(line, paramExprList, statements()));
+        s = new SequenceStatement(line, s, new MethodStatement(line, paramExprList, statements()));
         match(Tag.END_BLOCK);
         top = parentScope;
         return s;
@@ -152,7 +152,7 @@ public class Parser {
         match(Tag.BEGIN_BLOCK);
         ParserScope savedParserScope = top;
         top = new ParserScope(top);
-        Statement s = new Seq(line, new PushScope(line), statements());
+        Statement s = new SequenceStatement(line, new PushScopeStatement(line), statements());
         match(Tag.END_BLOCK);
         top = savedParserScope;
         return s;
@@ -160,9 +160,9 @@ public class Parser {
 
     private Statement statements() throws SyntaxException {
         if (look.getTag() == Tag.END_BLOCK) {
-            return new PopScope(line);
+            return new PopScopeStatement(line);
         } else {
-            return new Seq(line, statement(), statements());
+            return new SequenceStatement(line, statement(), statements());
         }
     }
 
@@ -184,32 +184,32 @@ public class Parser {
                 match(Tag.CLOSE_BRACKET);
                 s1 = statement();
                 if (look.getTag() != Tag.ELSE) {
-                    return new If(line, x, s1);
+                    return new IfStatement(line, x, s1);
                 }
                 match(Tag.ELSE);
                 s2 = statement();
-                return new Else(lexer.getLine(), x, s1, s2);
+                return new ElseStatement(lexer.getLine(), x, s1, s2);
             case WHILE:
-                While whileNode = new While(line);
+                WhileStatement whileStatement = new WhileStatement(line);
                 savedStatement = Statement.Enclosing;
-                Statement.Enclosing = whileNode;
+                Statement.Enclosing = whileStatement;
                 match(Tag.WHILE);
                 match(Tag.OPEN_BRACKET);
                 x = bool();
                 match(Tag.CLOSE_BRACKET);
                 s1 = statement();
-                whileNode.init(x, s1);
+                whileStatement.init(x, s1);
                 Statement.Enclosing = savedStatement;
                 // reset statement.enclosing
-                return whileNode;
+                return whileStatement;
             case BREAK:
                 match(Tag.BREAK);
                 match(Tag.SEMICOLON);
-                return new Break(line);
+                return new BreakStatement(line);
             case ECHO:
                 match(Tag.ECHO);
                 x = bool();
-                return new Echo(line, x);
+                return new EchoStatement(line, x);
             case BEGIN_BLOCK:
                 return block();
             case RETURN:
@@ -241,8 +241,8 @@ public class Parser {
         } else {
             // здесь тоже может объявляться массив (например, через вызов метода или через другую переменную)
             Value initialValue = ParserUtils.getInitialValueByToken(line, typeToken);
-            Define define = new Define(line, variable, initialValue);
-            statement = new Seq(line, define, new Set(line, variable, bool()));
+            DefineStatement defineStatement = new DefineStatement(line, variable, initialValue);
+            statement = new SequenceStatement(line, defineStatement, new SetStatement(line, variable, bool()));
         }
         match(Tag.SEMICOLON);
 
@@ -255,7 +255,7 @@ public class Parser {
         while (look.getTag() != Tag.CLOSE_SQUARE) { // одна итерация - один элемент массива
             TypeToken type = t.getArrayType();
             AccessExpression x = new AccessExpression(line, variable, new ConstantExpression(line, inner), type);
-            statement = new Seq(line, statement, new SetElem(line, x, bool()));
+            statement = new SequenceStatement(line, statement, new SetElementStatement(line, x, bool()));
             inner++;
             if (look.getTag() != Tag.COMMA) {
                 break;
@@ -264,8 +264,8 @@ public class Parser {
         }
         match(Tag.CLOSE_SQUARE);
         Value initialValue = ParserUtils.getInitialValueByToken(line, t.getArrayType());
-        DefineArray defineArray = new DefineArray(line, variable, inner, initialValue);
-        statement = new Seq(line, defineArray, statement);
+        DefineArrayStatement defineArrayStatement = new DefineArrayStatement(line, variable, inner, initialValue);
+        statement = new SequenceStatement(line, defineArrayStatement, statement);
         return statement;
     }
 
@@ -299,19 +299,19 @@ public class Parser {
         Statement statement;
         if (look.getTag() == Tag.ASSIGN) {
             move();
-            statement = new Set(line, variable, bool());
+            statement = new SetStatement(line, variable, bool());
         } else if (look.getTag() == Tag.INCREMENT) {
             move();
             Expression binExpr = new BinaryExpression(line, new Token(Tag.PLUS), variable, new ConstantExpression(line, 1));
-            statement = new Set(line, variable, binExpr);
+            statement = new SetStatement(line, variable, binExpr);
         } else if (look.getTag() == Tag.DECREMENT) {
             move();
             Expression binExpr = new BinaryExpression(line, new Token(Tag.MINUS), variable, new ConstantExpression(line, 1));
-            statement = new Set(line, variable, binExpr);
+            statement = new SetStatement(line, variable, binExpr);
         } else {
             AccessExpression indexedVariable = offset(variable);
             match(Tag.ASSIGN);
-            statement = new SetElem(line, indexedVariable, bool());
+            statement = new SetElementStatement(line, indexedVariable, bool());
         }
         match(Tag.SEMICOLON);
         return statement;
