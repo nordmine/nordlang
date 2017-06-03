@@ -1,16 +1,16 @@
 package ru.nordmine.nordlang.syntax;
 
-import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 import ru.nordmine.nordlang.lexer.ArrayToken;
 import ru.nordmine.nordlang.lexer.TypeToken;
 import ru.nordmine.nordlang.machine.value.*;
+import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 
 public class ParserUtils {
 
     public static TypeToken checkTypes(TypeToken type1, TypeToken type2) {
         if (type1 instanceof ArrayToken && type2 instanceof ArrayToken) {
-            TypeToken arrayType1 = ((ArrayToken) type1).getArrayType();
-            TypeToken arrayType2 = ((ArrayToken) type2).getArrayType();
+            TypeToken arrayType1 = type1.getArrayType();
+            TypeToken arrayType2 = type2.getArrayType();
             if (arrayType1 == arrayType2) {
                 return arrayType1;
             } else {
@@ -47,8 +47,8 @@ public class ParserUtils {
         } else if (typeToken == TypeToken.STRING) {
             return new StringValue(new StringBuilder());
         } else if (typeToken instanceof ArrayToken) {
-            TypeToken arrayType = ((ArrayToken) typeToken).getArrayType();
-            return new ListValue(getInitialValueByToken(line, arrayType), 0);
+            TypeToken arrayType = typeToken.getArrayType();
+            return new ListValue(getInitialValueByToken(line, arrayType));
         } else {
             throw new SyntaxException(line, "unknown typeToken: " + typeToken);
         }

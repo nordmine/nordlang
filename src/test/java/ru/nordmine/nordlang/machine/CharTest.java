@@ -16,7 +16,8 @@ public class CharTest extends MachineTest {
                 {"char symbol = 'B'; echo symbol;", "B"},
                 {"char[] message = ['T','e','s','t']; int i = 0; while(i < 4) { echo message[i]; i = i + 1;}", "Test"},
                 {"char[] chars = ['a', 'b', 'c']; echo chars[1];", "b"},
-                {"char[] message = ['T','e','s','t']; message[2] = 'x'; echo message;", "[T,e,x,t]"}
+                {"char[] message = ['T','e','s','t']; message[2] = 'x'; echo message;", "[T,e,x,t]"},
+                {"char[] chars = ['a']; chars[] = 'b'; echo chars;", "[a,b]"}
         };
     }
 
@@ -31,5 +32,21 @@ public class CharTest extends MachineTest {
     )
     public void charIntConcat() throws LangException {
         getResult("echo '2' + 4;");
+    }
+
+    @Test(
+            expectedExceptions = SyntaxException.class,
+            expectedExceptionsMessageRegExp = "Syntax error at line 1: incompatible types: char, bool"
+    )
+    public void incompatibleTypesArrayDefinition() throws LangException {
+        getResult("char[] v1 = ['a','b',true];");
+    }
+
+    @Test(
+            expectedExceptions = SyntaxException.class,
+            expectedExceptionsMessageRegExp = "Syntax error at line 1: incompatible types: char, bool"
+    )
+    public void incompatibleTypesArrayAddElement() throws LangException {
+        getResult("char[] v1 = ['a','b']; v1[] = false;");
     }
 }

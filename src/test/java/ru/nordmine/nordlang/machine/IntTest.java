@@ -19,7 +19,8 @@ public class IntTest extends MachineTest {
                 {"int[] v = [42,1, 15]; v[2] = 18; echo v;", "[42,1,18]"},
                 {"int[] v1 = [42,1, 15]; int[] v2 = [3,4]; v1[2] = v2[1]; echo v1;", "[42,1,4]"},
                 {"int a = 3;\na++;\necho a;", "4"},
-                {"int a = 3;\na--;\necho a;", "2"}
+                {"int a = 3;\na--;\necho a;", "2"},
+                {"int[] ar = [11]; ar[] = 22; echo ar;", "[11,22]"}
         };
     }
 
@@ -50,5 +51,21 @@ public class IntTest extends MachineTest {
     )
     public void incompatibleTypesArrayAssign() throws LangException {
         getResult("int[] v1 = [42,1, 15]; bool[] v2 = [true, true]; v1[2] = v2[1];");
+    }
+
+    @Test(
+            expectedExceptions = SyntaxException.class,
+            expectedExceptionsMessageRegExp = "Syntax error at line 1: incompatible types: int, bool"
+    )
+    public void incompatibleTypesArrayDefinition() throws LangException {
+        getResult("int[] v1 = [42,1,true];");
+    }
+
+    @Test(
+            expectedExceptions = SyntaxException.class,
+            expectedExceptionsMessageRegExp = "Syntax error at line 1: incompatible types: int, char"
+    )
+    public void incompatibleTypesArrayAddElement() throws LangException {
+        getResult("int[] v1 = [42,1]; v1[] = 'c';");
     }
 }

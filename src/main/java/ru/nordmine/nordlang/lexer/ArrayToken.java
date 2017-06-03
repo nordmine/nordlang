@@ -4,15 +4,8 @@ import java.util.Objects;
 
 public class ArrayToken extends TypeToken {
 
-    private final TypeToken arrayType;
-
     public ArrayToken(TypeToken arrayType) {
-        super("[]", Tag.INDEX);
-        this.arrayType = arrayType;
-    }
-
-    public TypeToken getArrayType() {
-        return arrayType;
+        super("[]", Tag.INDEX, arrayType);
     }
 
     @Override

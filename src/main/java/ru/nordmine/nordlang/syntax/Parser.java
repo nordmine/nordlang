@@ -111,8 +111,8 @@ public class Parser {
 
             Statement define;
             if (paramInfo.getType().getTag() == Tag.INDEX) {
-                Value initialValue = ParserUtils.getInitialValueByToken(line, ((ArrayToken) paramInfo.getType()).getArrayType());
-                define = new DefineArrayStatement(line, variable, 0, initialValue);
+                Value initialValue = ParserUtils.getInitialValueByToken(line, paramInfo.getType().getArrayType());
+                define = new DefineArrayStatement(line, variable, initialValue);
             } else {
                 Value initialValue = ParserUtils.getInitialValueByToken(line, paramInfo.getType());
                 define = new DefineStatement(line, variable, initialValue); // todo initialValue реализовать в Value?
@@ -251,12 +251,13 @@ public class Parser {
 
     private Statement arrayDefinition(ArrayToken t, VariableExpression variable, Statement statement) throws SyntaxException {
         move();
-        int inner = 0;
+        TypeToken type = t.getArrayType();
         while (look.getTag() != Tag.CLOSE_SQUARE) { // одна итерация - один элемент массива
-            TypeToken type = t.getArrayType();
-            AccessExpression x = new AccessExpression(line, variable, new ConstantExpression(line, inner), type);
-            statement = new SequenceStatement(line, statement, new SetElementStatement(line, x, bool()));
-            inner++;
+            Expression elementExpression = bool();
+            if (type != elementExpression.getType()) {
+                ParserUtils.typeError(line, type, elementExpression.getType());
+            }
+            statement = new SequenceStatement(line, statement, new AddElementStatement(line, variable, elementExpression));
             if (look.getTag() != Tag.COMMA) {
                 break;
             }
@@ -264,7 +265,7 @@ public class Parser {
         }
         match(Tag.CLOSE_SQUARE);
         Value initialValue = ParserUtils.getInitialValueByToken(line, t.getArrayType());
-        DefineArrayStatement defineArrayStatement = new DefineArrayStatement(line, variable, inner, initialValue);
+        DefineArrayStatement defineArrayStatement = new DefineArrayStatement(line, variable, initialValue);
         statement = new SequenceStatement(line, defineArrayStatement, statement);
         return statement;
     }
@@ -311,7 +312,18 @@ public class Parser {
         } else {
             AccessExpression indexedVariable = offset(variable);
             match(Tag.ASSIGN);
-            statement = new SetElementStatement(line, indexedVariable, bool());
+            if (indexedVariable == null) {
+                // [] - добавление нового элемента в массив
+                Expression elemExpr = bool();
+                TypeToken arrayType = variable.getType().getArrayType();
+                if (arrayType != elemExpr.getType()) {
+                    ParserUtils.typeError(line, arrayType, elemExpr.getType());
+                }
+                statement = new AddElementStatement(line, variable, elemExpr);
+            } else {
+                // [x] - установка в элемент x нового значения
+                statement = new SetElementStatement(line, indexedVariable, bool());
+            }
         }
         match(Tag.SEMICOLON);
         return statement;
@@ -471,7 +483,11 @@ public class Parser {
                         error(String.format("variable '%s' is not defined", wordToken.toString()));
                     }
                     if (look.getTag() == Tag.OPEN_SQUARE) {
-                        return offset(variable);
+                        AccessExpression accExpr = offset(variable);
+                        if (accExpr == null) {
+                            throw new SyntaxException(line, "index expected");
+                        }
+                        return  accExpr;
                     } else {
                         return variable;
                     }
@@ -483,19 +499,18 @@ public class Parser {
     }
 
     private AccessExpression offset(VariableExpression a) throws SyntaxException {
-        // todo избавиться от костылей для строки
         TypeToken type = a.getType();
-        if (type != TypeToken.STRING && type.getTag() == Tag.BASIC) {
+        if (type.getArrayType() == null) {
             throw new SyntaxException(line, "array type expected");
         }
         match(Tag.OPEN_SQUARE);
-        Expression indexExpr = bool();
-        match(Tag.CLOSE_SQUARE);
-        if (type == TypeToken.STRING) {
-            return new AccessExpression(line, a, indexExpr, TypeToken.CHAR);
+        if (look.getTag() == Tag.CLOSE_SQUARE) {
+            match(Tag.CLOSE_SQUARE);
+            return null;
         } else {
-            type = ((ArrayToken) type).getArrayType();
-            return new AccessExpression(line, a, indexExpr, type);
+            Expression indexExpr = bool();
+            match(Tag.CLOSE_SQUARE);
+            return new AccessExpression(line, a, indexExpr, type.getArrayType());
         }
     }
 

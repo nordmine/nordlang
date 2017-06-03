@@ -13,11 +13,8 @@ public class ListValue extends Value {
     // многомерный массив - абстракция над одномерным
     final ValueType elementValueType;
 
-    public ListValue(Value initialValue, int initialSize) {
+    public ListValue(Value initialValue) {
         this.elementValueType = initialValue.getValueType();
-        for (int i = 0; i < initialSize; i++) {
-            values.add(initialValue);
-        }
     }
 
     @Override
@@ -49,6 +46,12 @@ public class ListValue extends Value {
     @Override
     public Value plus(Value right) throws RunException {
         throw new UnsupportedOperation("plus");
+    }
+
+    @Override
+    public void addElement(Value element) throws RunException {
+        checkForType(elementValueType, element);
+        values.add(element);
     }
 
     @Override

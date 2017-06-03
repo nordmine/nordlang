@@ -8,19 +8,18 @@ import ru.nordmine.nordlang.syntax.expressions.VariableExpression;
 
 public class DefineArrayStatement extends Statement {
 
+    // todo по возможности заменить variableExpression на nameIndex в подобных Statement'ах
     private final VariableExpression variable;
     private final Value initialValue;
-    private final int initialSize;
 
-    public DefineArrayStatement(int line, VariableExpression variable, int initialSize, Value initialValue) {
+    public DefineArrayStatement(int line, VariableExpression variable, Value initialValue) {
         super(line);
         this.variable = variable;
         this.initialValue = initialValue;
-        this.initialSize = initialSize;
     }
 
     @Override
     public void gen(Program program, Label begin, Label after) {
-        program.add(new DefineArrayCommand(variable.getUniqueIndex(), initialSize, initialValue));
+        program.add(new DefineArrayCommand(variable.getUniqueIndex(), initialValue));
     }
 }

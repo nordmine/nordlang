@@ -37,6 +37,10 @@ public abstract class Value {
         throw new UnsupportedOperation("setByIndex");
     }
 
+    public void addElement(Value element) throws RunException {
+        throw new UnsupportedOperation("addElement");
+    }
+
     public Value plus(Value right) throws RunException {
         throw new UnsupportedOperation("plus");
     }
