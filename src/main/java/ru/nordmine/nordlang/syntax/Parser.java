@@ -407,7 +407,13 @@ public class Parser {
             move();
             return new NotExpression(line, token, unary());
         } else {
-            return factor();
+            Expression expr = factor();
+            if (expr.getType() == TypeToken.BOOL) {
+                // фиктивное сравнение c true, чтобы была возможна короткая запись "bool b = true; if (b)..."
+                return new RelExpression(expr.getLine(), WordToken.EQUAL, expr, ConstantExpression.TRUE);
+            } else {
+                return expr;
+            }
         }
     }
 

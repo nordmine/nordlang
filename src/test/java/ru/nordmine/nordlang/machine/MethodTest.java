@@ -34,7 +34,8 @@ public class MethodTest extends MachineTest {
                 {"int main() {\nint[] ar = init();\necho ar; return 0;} " +
                         "int[] init() { int[] ar = [1,2,3]; return ar; }", "[1,2,3]"},
                 {"int main() { int[] ar = [1,2,3]; echo ar[1]; ar = mod(ar); echo ar[1]; return 0;} " +
-                        "int[] mod(int[] ar) { ar[1] = 100; return ar; }", "2100"}
+                        "int[] mod(int[] ar) { ar[1] = 100; return ar; }", "2100"},
+                {"int main() { if(ok()) { echo 'a'; } echo 'b'; return 0; } bool ok() { return true; }", "ab"}
         };
     }
 
