@@ -11,7 +11,7 @@ public class LexerTest {
 
     @Test
     public void numbers() throws SyntaxException {
-        lexer = new Lexer("   0 3\r\n135   ");
+        lexer = new StringLexer("   0 3\r\n135   ");
 
         Token zeroToken = lexer.nextToken();
         assertEquals(zeroToken.getTag(), Tag.INT);
@@ -28,7 +28,7 @@ public class LexerTest {
 
     @Test
     public void mathExpression() throws SyntaxException {
-        lexer = new Lexer("   var1+(var2/5 - 2) * 3   ");
+        lexer = new StringLexer("   var1+(var2/5 - 2) * 3   ");
         assertEquals(nextTag(), Tag.ID);
         assertEquals(nextTag(), Tag.PLUS);
         assertEquals(nextTag(), Tag.OPEN_BRACKET);
@@ -46,7 +46,7 @@ public class LexerTest {
 
     @Test
     public void assignWithExpression() throws SyntaxException {
-        lexer = new Lexer("int i=20+3");
+        lexer = new StringLexer("int i=20+3");
         assertEquals(nextTag(), Tag.BASIC);
         assertEquals(nextTag(), Tag.ID);
         assertEquals(nextTag(), Tag.ASSIGN);
@@ -57,33 +57,33 @@ public class LexerTest {
 
     @Test
     public void increment() throws SyntaxException {
-        lexer = new Lexer("+ ++");
+        lexer = new StringLexer("+ ++");
         assertEquals(nextTag(), Tag.PLUS);
         assertEquals(nextTag(), Tag.INCREMENT);
     }
 
     @Test
     public void decrement() throws SyntaxException {
-        lexer = new Lexer("- --");
+        lexer = new StringLexer("- --");
         assertEquals(nextTag(), Tag.MINUS);
         assertEquals(nextTag(), Tag.DECREMENT);
     }
 
     @Test
     public void inlineCommentOnly() throws SyntaxException {
-        lexer = new Lexer("//i");
+        lexer = new StringLexer("//i");
         assertEquals(nextTag(), Tag.END_OF_FILE);
     }
 
     @Test
     public void beginInlineComment() throws SyntaxException {
-        lexer = new Lexer("// some text\n10");
+        lexer = new StringLexer("// some text\n10");
         assertEquals(lexer.nextToken().toString(), "10");
     }
 
     @Test
     public void middleInlineComment() throws SyntaxException {
-        lexer = new Lexer("20 / 1  // comment\n30 ");
+        lexer = new StringLexer("20 / 1  // comment\n30 ");
         assertEquals(lexer.nextToken().toString(), "20");
         assertEquals(nextTag(), Tag.DIVISION);
         assertEquals(lexer.nextToken().toString(), "1");
@@ -92,14 +92,20 @@ public class LexerTest {
 
     @Test
     public void charLiteral() throws SyntaxException {
-        lexer = new Lexer("   'a'");
+        lexer = new StringLexer("   'a'");
         assertEquals(lexer.nextToken().toString(), "'a'");
     }
 
     @Test
     public void sizeLiteral() throws SyntaxException {
-        lexer = new Lexer("  size(a) ");
+        lexer = new StringLexer("  size(a) ");
         assertEquals(nextTag(), Tag.SIZE);
+    }
+
+    @Test
+    public void constLiteral() throws SyntaxException {
+        lexer = new StringLexer("const int MAGIC = 42;");
+        assertEquals(nextTag(), Tag.CONST);
     }
 
     @Test(
@@ -107,13 +113,13 @@ public class LexerTest {
             expectedExceptionsMessageRegExp = "Syntax error at line 1: char literal contains more than 1 symbol"
     )
     public void charLiteralWithoutEnding() throws SyntaxException {
-        lexer = new Lexer("    'b");
+        lexer = new StringLexer("    'b");
         lexer.nextToken();
     }
 
     @Test
     public void stringLiteral() throws SyntaxException {
-        lexer = new Lexer("   \"some text\"");
+        lexer = new StringLexer("   \"some text\"");
         Token stringToken = lexer.nextToken();
         assertEquals(stringToken.getTag(), Tag.STRING);
         assertEquals(stringToken.toString(), "some text");
@@ -124,7 +130,7 @@ public class LexerTest {
             expectedExceptionsMessageRegExp = "Syntax error at line 2: unexpected end of string literal"
     )
     public void stringLiteralWithoutEnding() throws SyntaxException {
-        lexer = new Lexer(" \r\n  \"some text");
+        lexer = new StringLexer(" \r\n  \"some text");
         lexer.nextToken();
     }
 

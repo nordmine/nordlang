@@ -15,6 +15,7 @@ public enum Tag {
     INDEX,
     RETURN,
     SIZE,
+    CONST,
 
     /* types */
     BASIC,

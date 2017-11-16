@@ -1,19 +1,20 @@
 package ru.nordmine.nordlang.machine;
 
 import ru.nordmine.nordlang.exceptions.LangException;
-import ru.nordmine.nordlang.syntax.Parser;
+import ru.nordmine.nordlang.lexer.StringLexer;
+import ru.nordmine.nordlang.lexer.TypeToken;
+import ru.nordmine.nordlang.syntax.MethodInfo;
+import ru.nordmine.nordlang.syntax.ParserContext;
+import ru.nordmine.nordlang.syntax.Signatures;
+import ru.nordmine.nordlang.syntax.StatementParser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 public abstract class MachineTest {
 
-    protected String wrapSource(String source) {
-        return String.format("int main() { %s return 0; }", source);
-    }
-
     protected final String getResult(String source) throws LangException {
-        Parser parser = new Parser(wrapSource(source));
+        StatementParser parser = new StatementParser(new ParserContext(new StringLexer(source)), new Signatures(), new MethodInfo(TypeToken.INT, "main"));
         Program program = parser.createProgram();
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();

@@ -23,6 +23,7 @@ public class WordToken extends Token {
     public static final WordToken BREAK = new WordToken(Tag.BREAK, "break");
     public static final WordToken RETURN = new WordToken(Tag.RETURN, "return");
     public static final WordToken SIZE = new WordToken(Tag.SIZE, "size");
+    public static final WordToken CONST = new WordToken(Tag.CONST, "const");
 
     // для переменных здесь содержится её имя
     private final String lexeme;

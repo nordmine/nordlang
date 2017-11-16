@@ -3,16 +3,25 @@ package ru.nordmine.nordlang.machine;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.nordmine.nordlang.exceptions.LangException;
+import ru.nordmine.nordlang.lexer.StringLexer;
+import ru.nordmine.nordlang.lexer.TypeToken;
+import ru.nordmine.nordlang.syntax.MethodInfo;
+import ru.nordmine.nordlang.syntax.Signatures;
+import ru.nordmine.nordlang.syntax.SourceParser;
+import ru.nordmine.nordlang.syntax.StatementParser;
 import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 import static org.testng.Assert.assertEquals;
 
-public class MethodTest extends MachineTest {
+public class MethodTest {
 
     @DataProvider
     public Object[][] sourceDataProvider() {
         return new Object[][]{
-                {"string getMessage() { return \"Превед!\"; } int main() { echo getMessage(); return 0; }", "Превед!"},
+                /*{"string getMessage() { return \"Превед!\"; } int main() { echo getMessage(); return 0; }", "Превед!"},
                 {"int main() { echo getMessage(); return 0; } string getMessage() { return \"Превед!\"; }", "Превед!"},
                 {"string getMessage() { return \"Превед\"; } int main() { string message = getMessage() + '!';" +
                         " echo message; return 0; }", "Превед!"},
@@ -35,7 +44,8 @@ public class MethodTest extends MachineTest {
                         "int[] init() { int[] ar = [1,2,3]; return ar; }", "[1,2,3]"},
                 {"int main() { int[] ar = [1,2,3]; echo ar[1]; ar = mod(ar); echo ar[1]; return 0;} " +
                         "int[] mod(int[] ar) { ar[1] = 100; return ar; }", "2100"},
-                {"int main() { if(ok()) { echo 'a'; } echo 'b'; return 0; } bool ok() { return true; }", "ab"}
+                {"int main() { if(ok()) { echo 'a'; } echo 'b'; return 0; } bool ok() { return true; }", "ab"},*/
+                {"const int MAGIC = 42; int main() { echo magic(); return 0; } int magic() { return MAGIC; }", "42"}
         };
     }
 
@@ -109,8 +119,14 @@ public class MethodTest extends MachineTest {
         getResult("string getMessage() { return \"Превед\"; }");
     }
 
-    @Override
-    protected String wrapSource(String source) {
-        return source;
+    protected final String getResult(String source) throws LangException {
+        SourceParser parser = new SourceParser(source);
+        Program program = parser.createProgram();
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        Machine machine = new Machine(new PrintStream(output));
+
+        machine.execute(program);
+        return output.toString();
     }
 }

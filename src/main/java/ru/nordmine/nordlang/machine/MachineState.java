@@ -8,7 +8,8 @@ import java.util.Stack;
 
 public class MachineState {
 
-    private MachineScope scope = new MachineScope(null);
+    private MachineScope globalScope = new MachineScope(null);
+    private MachineScope scope = globalScope;
     private Stack<MachineScope> scopeStack = new Stack<>();
     private Stack<Value> valueStack = new Stack<>();
     private final PrintStream printStream;
@@ -41,7 +42,7 @@ public class MachineState {
 
     public void pushMethodScope() {
         scopeStack.push(this.scope);
-        this.scope = new MachineScope(null);
+        this.scope = new MachineScope(globalScope);
     }
 
     public void popMethodScope() throws RunException {

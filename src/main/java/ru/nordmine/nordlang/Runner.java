@@ -3,7 +3,8 @@ package ru.nordmine.nordlang;
 import ru.nordmine.nordlang.exceptions.LangException;
 import ru.nordmine.nordlang.machine.Machine;
 import ru.nordmine.nordlang.machine.Program;
-import ru.nordmine.nordlang.syntax.Parser;
+import ru.nordmine.nordlang.syntax.SourceParser;
+import ru.nordmine.nordlang.syntax.StatementParser;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,7 +53,7 @@ public class Runner {
     }
 
     private void processSource(String source) throws LangException {
-        Parser parser = new Parser(source);
+        SourceParser parser = new SourceParser(source);
         Program program = parser.createProgram();
         Machine machine = new Machine(System.out);
         machine.execute(program);
