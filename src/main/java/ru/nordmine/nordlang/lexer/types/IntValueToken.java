@@ -8,8 +8,8 @@ public class IntValueToken extends ValueToken {
 
     private final int value;
 
-    public IntValueToken(int value) {
-        super(Tag.INT);
+    public IntValueToken(int value, int line) {
+        super(Tag.INT, line);
         this.value = value;
     }
 

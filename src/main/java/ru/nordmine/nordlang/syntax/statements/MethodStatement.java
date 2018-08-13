@@ -12,8 +12,7 @@ public class MethodStatement extends Statement {
     private final Statement bodyStatement;
     private final List<VariableExpression> paramExprList;
 
-    public MethodStatement(int line, List<VariableExpression> paramExprList, Statement bodyStatement) {
-        super(line);
+    public MethodStatement(List<VariableExpression> paramExprList, Statement bodyStatement) {
         this.bodyStatement = bodyStatement;
         this.paramExprList = paramExprList;
     }

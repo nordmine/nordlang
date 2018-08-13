@@ -11,8 +11,7 @@ public class DefineStatement extends Statement {
     private final VariableExpression variable;
     private final Value initialValue;
 
-    public DefineStatement(int line, VariableExpression variable, Value initialValue) {
-        super(line);
+    public DefineStatement(VariableExpression variable, Value initialValue) {
         this.variable = variable;
         this.initialValue = initialValue;
     }

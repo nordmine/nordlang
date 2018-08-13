@@ -6,8 +6,8 @@ import ru.nordmine.nordlang.machine.Program;
 
 public abstract class ValueToken extends Token {
 
-    public ValueToken(Tag tag) {
-        super(tag);
+    public ValueToken(Tag tag, int line) {
+        super(tag, line);
     }
 
     public abstract void gen(Program program);

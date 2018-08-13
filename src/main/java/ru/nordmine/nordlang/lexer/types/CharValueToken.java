@@ -8,8 +8,8 @@ public class CharValueToken extends ValueToken {
 
     private final char value;
 
-    public CharValueToken(char value) {
-        super(Tag.CHAR);
+    public CharValueToken(char value, int line) {
+        super(Tag.CHAR, line);
         this.value = value;
     }
 

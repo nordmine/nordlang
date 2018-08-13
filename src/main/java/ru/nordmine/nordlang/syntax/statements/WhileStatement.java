@@ -12,8 +12,7 @@ public class WhileStatement extends Statement {
     private Expression expr;
     private Statement statement;
 
-    public WhileStatement(int line) {
-        super(line);
+    public WhileStatement() {
         expr = null;
         statement = null;
     }
@@ -22,7 +21,7 @@ public class WhileStatement extends Statement {
         expr = x;
         statement = s;
         if (expr.getType() != TypeToken.BOOL) {
-            ParserUtils.throwError(getLine(), "boolean value required in while");
+            ParserUtils.throwError(expr.getLine(), "boolean value required in while");
         }
     }
 

@@ -2,6 +2,10 @@ nordlang
 ========
 Пример скрипта:
 ```C#
+const string CAPITALIZED = "ABCDEFGHIJKLMNOPQRSTUVWXYZАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+const string LOWERED = "abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+const string DIGITS = "0123456789";
+
 int main() {
     string text = "    Some Text    ";
     string trimmedText = trim(text);
@@ -97,11 +101,9 @@ string toUpper(string original) {
 }
 
 char toUpperChar(char c) {
-    string capitalized = "ABCDEFGHIJKLMNOPQRSTUVWXYZАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
-    string lowered = "abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
-    int pos = findChar(c, lowered);
+    int pos = findChar(c, LOWERED);
     if (pos > 0) {
-        c = capitalized[pos];
+        c = CAPITALIZED[pos];
     }
     return c;
 }
@@ -118,11 +120,9 @@ string toLower(string original) {
 }
 
 char toLowerChar(char c) {
-    string capitalized = "ABCDEFGHIJKLMNOPQRSTUVWXYZАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
-    string lowered = "abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
-    int pos = findChar(c, capitalized);
+    int pos = findChar(c, CAPITALIZED);
     if (pos > 0) {
-        c = lowered[pos];
+        c = LOWERED[pos];
     }
     return c;
 }
@@ -132,7 +132,7 @@ bool containsChar(char c, string where) {
 }
 
 bool isDigit(char c) {
-    return containsChar(c, "0123456789");
+    return containsChar(c, DIGITS);
 }
 
 // Math utils

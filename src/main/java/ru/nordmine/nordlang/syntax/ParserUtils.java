@@ -37,7 +37,7 @@ public class ParserUtils {
         throwError(line, "incompatible types: " + type1 + ", " + type2);
     }
 
-    public static Value getInitialValueByToken(int line, TypeToken typeToken) throws SyntaxException {
+    public static Value getInitialValueByToken(TypeToken typeToken) throws SyntaxException {
         if (typeToken == TypeToken.BOOL) {
             return BoolValue.FALSE;
         } else if (typeToken == TypeToken.CHAR) {
@@ -48,9 +48,9 @@ public class ParserUtils {
             return new StringValue(new StringBuilder());
         } else if (typeToken instanceof ArrayToken) {
             TypeToken arrayType = typeToken.getArrayType();
-            return new ListValue(getInitialValueByToken(line, arrayType));
+            return new ListValue(getInitialValueByToken(arrayType));
         } else {
-            throw new SyntaxException(line, "unknown typeToken: " + typeToken);
+            throw new SyntaxException(typeToken.getLine(), "unknown typeToken: " + typeToken);
         }
     }
 }

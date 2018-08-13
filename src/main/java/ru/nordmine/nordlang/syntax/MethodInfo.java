@@ -10,13 +10,15 @@ import java.util.List;
 public class MethodInfo {
 
     private final TypeToken returnType;
-    private final String name;
+    private final WordToken methodNameToken;
     private final List<ParamInfo> params = new ArrayList<>();
     private final Label beginLabel = new Label();
 
-    public MethodInfo(TypeToken returnType, String name) {
+    private boolean hasReturnStatement = false;
+
+    public MethodInfo(TypeToken returnType, WordToken methodNameToken) {
         this.returnType = returnType;
-        this.name = name;
+        this.methodNameToken = methodNameToken;
     }
 
     public void addParam(TypeToken type, WordToken id) {
@@ -27,8 +29,12 @@ public class MethodInfo {
         return returnType;
     }
 
+    public WordToken getMethodNameToken() {
+        return methodNameToken;
+    }
+
     public String getName() {
-        return name;
+        return methodNameToken.getLexeme();
     }
 
     public List<ParamInfo> getParams() {
@@ -39,8 +45,16 @@ public class MethodInfo {
         return beginLabel;
     }
 
+    public boolean hasReturnStatement() {
+        return hasReturnStatement;
+    }
+
+    public void setHasReturnStatement(boolean hasReturnStatement) {
+        this.hasReturnStatement = hasReturnStatement;
+    }
+
     @Override
     public String toString() {
-        return returnType + " " + name + "(" + params + ")";
+        return returnType + " " + methodNameToken.getLexeme() + "(" + (params.isEmpty() ? "" : params) + ")";
     }
 }

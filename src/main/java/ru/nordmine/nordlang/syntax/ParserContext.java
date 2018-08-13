@@ -1,38 +1,48 @@
 package ru.nordmine.nordlang.syntax;
 
-import ru.nordmine.nordlang.lexer.Lexer;
 import ru.nordmine.nordlang.lexer.Tag;
 import ru.nordmine.nordlang.lexer.Token;
 import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 
+import java.util.List;
+
 public class ParserContext {
 
-    private final Lexer lexer;
+    private final List<Token> tokens;
+    private int index = -1;
     private Token look; // предпросмотр
-    private int line = 0;
 
-    public ParserContext(Lexer lexer) {
-        this.lexer = lexer;
+    public ParserContext(List<Token> tokens) {
+        this.tokens = tokens;
     }
 
-    public void move() throws SyntaxException {
-        look = lexer.nextToken();
-        line = lexer.getLine();
-    }
-
-    private void error(String s) throws SyntaxException {
-        throw new SyntaxException(lexer.getLine(), s);
+    public void move() {
+        index++;
+        look = tokens.get(index);
     }
 
     public void match(Tag t) throws SyntaxException {
         if (look.getTag() == t) {
             move();
         } else {
-            error(String.format("Tag %s is expected, but was %s", t, look.getTag()));
+            error(String.format("Tag %s is expected, but was %s", t, look.getTag()), look.getLine());
         }
+    }
+
+    private void error(String s, int line) throws SyntaxException {
+        throw new SyntaxException(line, s);
     }
 
     public Tag getTag() {
         return this.look.getTag();
+    }
+
+    public Token getLook() {
+        return look;
+    }
+
+    public void resetIndex() {
+        index = 0;
+        look = tokens.get(index);
     }
 }

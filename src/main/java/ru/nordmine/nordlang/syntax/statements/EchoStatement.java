@@ -9,8 +9,7 @@ public class EchoStatement extends Statement {
 
     private Expression expr;
 
-    public EchoStatement(int line, Expression expr) {
-        super(line);
+    public EchoStatement(Expression expr) {
         this.expr = expr;
     }
 

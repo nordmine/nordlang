@@ -10,8 +10,8 @@ public class VariableExpression extends Expression {
     // виртуальная машина оперирует индексами переменных вместо имён
     private final int uniqueIndex;
 
-    public VariableExpression(int line, WordToken id, TypeToken type, int uniqueIndex) {
-        super(line, id, type);
+    public VariableExpression(WordToken id, TypeToken type, int uniqueIndex) {
+        super(id, type);
         this.uniqueIndex = uniqueIndex;
     }
 

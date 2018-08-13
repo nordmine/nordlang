@@ -1,5 +1,6 @@
 package ru.nordmine.nordlang.syntax.statements;
 
+import ru.nordmine.nordlang.lexer.Token;
 import ru.nordmine.nordlang.machine.Label;
 import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 import ru.nordmine.nordlang.machine.Program;
@@ -9,10 +10,9 @@ public class BreakStatement extends Statement {
 
     private Statement statement;
 
-    public BreakStatement(int line) throws SyntaxException {
-        super(line);
+    public BreakStatement(Token token) throws SyntaxException {
         if (Enclosing == null) {
-            ParserUtils.throwError(getLine(), "unenclosed break");
+            ParserUtils.throwError(token.getLine(), "unenclosed break");
         }
         this.statement = Enclosing;
     }

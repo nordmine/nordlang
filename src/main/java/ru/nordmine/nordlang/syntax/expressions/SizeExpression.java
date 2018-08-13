@@ -9,8 +9,8 @@ public class SizeExpression extends Expression {
 
     private final Expression expression;
 
-    public SizeExpression(int line, Expression expression) {
-        super(line, WordToken.SIZE, TypeToken.INT);
+    public SizeExpression(Expression expression) {
+        super(WordToken.SIZE, TypeToken.INT);
         this.expression = expression;
     }
 

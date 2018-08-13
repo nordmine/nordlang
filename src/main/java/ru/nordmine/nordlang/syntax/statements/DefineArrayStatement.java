@@ -12,8 +12,7 @@ public class DefineArrayStatement extends Statement {
     private final VariableExpression variable;
     private final Value initialValue;
 
-    public DefineArrayStatement(int line, VariableExpression variable, Value initialValue) {
-        super(line);
+    public DefineArrayStatement(VariableExpression variable, Value initialValue) {
         this.variable = variable;
         this.initialValue = initialValue;
     }

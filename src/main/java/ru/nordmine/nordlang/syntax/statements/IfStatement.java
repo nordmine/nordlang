@@ -12,12 +12,11 @@ public class IfStatement extends Statement {
     private Expression expr;
     private Statement statement;
 
-    public IfStatement(int line, Expression expr, Statement statement) throws SyntaxException {
-        super(line);
+    public IfStatement(Expression expr, Statement statement) throws SyntaxException {
         this.expr = expr;
         this.statement = statement;
         if (expr.getType() != TypeToken.BOOL) {
-            ParserUtils.throwError(getLine(), "boolean value required in if");
+            ParserUtils.throwError(expr.getLine(), "boolean value required in if");
         }
     }
 

@@ -11,16 +11,16 @@ import ru.nordmine.nordlang.machine.value.BoolValue;
 
 public class ConstantExpression extends Expression {
 
-    public ConstantExpression(int line, Token token, TypeToken type) {
-        super(line, token, type);
+    public ConstantExpression(Token token, TypeToken type) {
+        super(token, type);
     }
 
     public ConstantExpression(int line, int i) {
-        super(line, new IntValueToken(i), TypeToken.INT);
+        super(new IntValueToken(i, line), TypeToken.INT);
     }
 
-    public static final ConstantExpression TRUE = new ConstantExpression(0, WordToken.TRUE, TypeToken.BOOL);
-    public static final ConstantExpression FALSE = new ConstantExpression(0, WordToken.FALSE, TypeToken.BOOL);
+    public static final ConstantExpression TRUE = new ConstantExpression(WordToken.TRUE, TypeToken.BOOL);
+    public static final ConstantExpression FALSE = new ConstantExpression(WordToken.FALSE, TypeToken.BOOL);
 
     @Override
     public void jumping(Program program, Label trueLabel, Label falseLabel) {

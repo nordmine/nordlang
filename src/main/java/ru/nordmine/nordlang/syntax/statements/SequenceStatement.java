@@ -8,8 +8,7 @@ public class SequenceStatement extends Statement {
     private Statement statement1;
     private Statement statement2;
 
-    public SequenceStatement(int line, Statement statement1, Statement statement2) {
-        super(line);
+    public SequenceStatement(Statement statement1, Statement statement2) {
         this.statement1 = statement1;
         this.statement2 = statement2;
     }

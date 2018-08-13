@@ -12,13 +12,12 @@ public class ElseStatement extends Statement {
     private Expression expr;
     private Statement statement1, statement2;
 
-    public ElseStatement(int line, Expression expr, Statement statement1, Statement statement2) throws SyntaxException {
-        super(line);
+    public ElseStatement(Expression expr, Statement statement1, Statement statement2) throws SyntaxException {
         this.expr = expr;
         this.statement1 = statement1;
         this.statement2 = statement2;
         if (expr.getType() != TypeToken.BOOL) {
-            ParserUtils.throwError(getLine(), "boolean required in if");
+            ParserUtils.throwError(expr.getLine(), "boolean required in if");
         }
     }
 

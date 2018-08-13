@@ -14,8 +14,8 @@ public abstract class LogicalExpression extends Expression {
     protected Expression left;
     protected Expression right;
 
-    public LogicalExpression(int line, Token token, Expression left, Expression right) throws SyntaxException {
-        super(line, token, null);
+    public LogicalExpression(Token token, Expression left, Expression right) throws SyntaxException {
+        super(token, null);
         this.left = left;
         this.right = right;
         type = check(left.getType(), right.getType());

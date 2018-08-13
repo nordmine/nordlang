@@ -12,8 +12,8 @@ public class MethodCallExpression extends Expression {
     private final MethodInfo methodInfo;
     private final List<Expression> paramExpressions;
 
-    public MethodCallExpression(int line, WordToken id, MethodInfo methodInfo, List<Expression> paramExpressions) {
-        super(line, id, methodInfo.getReturnType());
+    public MethodCallExpression(WordToken id, MethodInfo methodInfo, List<Expression> paramExpressions) {
+        super(id, methodInfo.getReturnType());
         this.methodInfo = methodInfo;
         this.paramExpressions = paramExpressions;
     }

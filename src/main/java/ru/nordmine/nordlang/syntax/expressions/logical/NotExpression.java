@@ -8,8 +8,8 @@ import ru.nordmine.nordlang.machine.Program;
 
 public class NotExpression extends LogicalExpression {
 
-    public NotExpression(int line, Token token, Expression right) throws SyntaxException {
-        super(line, token, right, right);
+    public NotExpression(Token token, Expression right) throws SyntaxException {
+        super(token, right, right);
     }
 
     @Override

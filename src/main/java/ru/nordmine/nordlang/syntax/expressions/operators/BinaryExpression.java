@@ -12,8 +12,8 @@ public class BinaryExpression extends Expression {
     private Expression left;
     private Expression right;
 
-    public BinaryExpression(int line, Token token, Expression left, Expression right) throws SyntaxException {
-        super(line, token, null);
+    public BinaryExpression(Token token, Expression left, Expression right) throws SyntaxException {
+        super(token, null);
         this.left = left;
         this.right = right;
         this.type = ParserUtils.checkTypes(left.getType(), right.getType());

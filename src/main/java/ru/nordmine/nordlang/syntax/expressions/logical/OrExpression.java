@@ -8,8 +8,8 @@ import ru.nordmine.nordlang.machine.Program;
 
 public class OrExpression extends LogicalExpression {
 
-    public OrExpression(int line, Token token, Expression left, Expression right) throws SyntaxException {
-        super(line, token, left, right);
+    public OrExpression(Token token, Expression left, Expression right) throws SyntaxException {
+        super(token, left, right);
     }
 
     @Override

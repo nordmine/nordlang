@@ -10,16 +10,13 @@ public abstract class Expression {
     protected Token operand;
     protected TypeToken type;
 
-    private final int line;
-
-    public Expression(int line, Token operand, TypeToken type) {
-        this.line = line;
+    public Expression(Token operand, TypeToken type) {
         this.operand = operand;
         this.type = type;
     }
 
     public int getLine() {
-        return line;
+        return operand.getLine();
     }
 
     public abstract void gen(Program program);
@@ -41,10 +38,6 @@ public abstract class Expression {
 
     public TypeToken getType() {
         return type;
-    }
-
-    public Token getOperand() {
-        return operand;
     }
 
     @Override

@@ -8,8 +8,8 @@ public class StringValueToken extends ValueToken {
 
     private final StringBuilder value;
 
-    public StringValueToken(StringBuilder value) {
-        super(Tag.STRING);
+    public StringValueToken(StringBuilder value, int line) {
+        super(Tag.STRING, line);
         this.value = value;
     }
 

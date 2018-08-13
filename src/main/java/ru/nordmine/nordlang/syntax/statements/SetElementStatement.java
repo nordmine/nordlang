@@ -15,13 +15,12 @@ public class SetElementStatement extends Statement {
     private Expression index;
     private Expression expr;
 
-    public SetElementStatement(int line, AccessExpression x, Expression expr) throws SyntaxException {
-        super(line);
+    public SetElementStatement(AccessExpression x, Expression expr) throws SyntaxException {
         this.array = x.getArray();
         this.index = x.getIndex();
         this.expr = expr;
         if (ParserUtils.checkTypes(x.getType(), expr.getType()) == null) {
-            ParserUtils.typeError(getLine(), x.getType(), expr.getType());
+            ParserUtils.typeError(expr.getLine(), x.getType(), expr.getType());
         }
     }
 

@@ -5,13 +5,19 @@ import java.util.Objects;
 public class Token {
 
     private final Tag tag;
+    private final int line;
 
-    public Token(Tag tag) {
+    public Token(Tag tag, int line) {
         this.tag = tag;
+        this.line = line;
     }
 
     public Tag getTag() {
         return tag;
+    }
+
+    public int getLine() {
+        return line;
     }
 
     @Override

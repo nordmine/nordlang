@@ -13,8 +13,8 @@ public class UnaryExpression extends Expression {
 
     private Expression expr;
 
-    public UnaryExpression(int line, Token token, Expression x) throws SyntaxException {
-        super(line, token, null);
+    public UnaryExpression(Token token, Expression x) throws SyntaxException {
+        super(token, null);
         expr = x;
         if (expr.getType() != TypeToken.INT) {
             ParserUtils.typeError(getLine(), TypeToken.INT, expr.getType());

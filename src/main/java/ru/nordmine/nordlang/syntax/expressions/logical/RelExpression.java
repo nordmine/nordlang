@@ -11,8 +11,8 @@ import ru.nordmine.nordlang.lexer.TypeToken;
 
 public class RelExpression extends LogicalExpression {
 
-    public RelExpression(int line, Token token, Expression left, Expression right) throws SyntaxException {
-        super(line, token, left, right);
+    public RelExpression(Token token, Expression left, Expression right) throws SyntaxException {
+        super(token, left, right);
     }
 
     @Override

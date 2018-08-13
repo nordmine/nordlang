@@ -13,12 +13,11 @@ public class SetStatement extends Statement {
     private VariableExpression variable;
     public Expression expr;
 
-    public SetStatement(int line, VariableExpression variable, Expression expr) throws SyntaxException {
-        super(line);
+    public SetStatement(VariableExpression variable, Expression expr) throws SyntaxException {
         this.variable = variable;
         this.expr = expr;
         if (ParserUtils.checkTypes(variable.getType(), expr.getType()) == null) {
-            ParserUtils.typeError(getLine(), variable.getType(), expr.getType());
+            ParserUtils.typeError(expr.getLine(), variable.getType(), expr.getType());
         }
     }
 

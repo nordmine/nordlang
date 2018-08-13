@@ -14,8 +14,8 @@ public class AccessExpression extends Expression {
     private VariableExpression array;
     private Expression index;
 
-    public AccessExpression(int line, VariableExpression array, Expression index, TypeToken type) {
-        super(line, new WordToken(Tag.INDEX, "[]"), type);
+    public AccessExpression(VariableExpression array, Expression index, TypeToken type) {
+        super(new WordToken(Tag.INDEX, "[]"), type);
         this.array = array;
         this.index = index;
     }

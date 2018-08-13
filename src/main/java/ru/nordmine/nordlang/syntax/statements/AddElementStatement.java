@@ -11,8 +11,7 @@ public class AddElementStatement extends Statement {
     private final VariableExpression variable;
     private final Expression expr;
 
-    public AddElementStatement(int line, VariableExpression variable, Expression expr) {
-        super(line);
+    public AddElementStatement(VariableExpression variable, Expression expr) {
         this.variable = variable;
         this.expr = expr;
     }
