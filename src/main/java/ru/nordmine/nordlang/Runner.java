@@ -4,7 +4,6 @@ import ru.nordmine.nordlang.exceptions.LangException;
 import ru.nordmine.nordlang.machine.Machine;
 import ru.nordmine.nordlang.machine.Program;
 import ru.nordmine.nordlang.syntax.SourceParser;
-import ru.nordmine.nordlang.syntax.StatementParser;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +39,7 @@ public class Runner {
     private String readSource(String sourceLocation) throws IOException {
         File sourceFile = new File(sourceLocation);
         if (sourceFile.exists()) {
-                return readFile(sourceLocation, StandardCharsets.UTF_8);
+            return readFile(sourceLocation, StandardCharsets.UTF_8);
         } else {
             throw new IOException("File does not exists");
         }

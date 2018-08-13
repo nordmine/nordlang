@@ -3,12 +3,7 @@ package ru.nordmine.nordlang.machine;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.nordmine.nordlang.exceptions.LangException;
-import ru.nordmine.nordlang.lexer.StringLexer;
-import ru.nordmine.nordlang.lexer.TypeToken;
-import ru.nordmine.nordlang.syntax.MethodInfo;
-import ru.nordmine.nordlang.syntax.Signatures;
 import ru.nordmine.nordlang.syntax.SourceParser;
-import ru.nordmine.nordlang.syntax.StatementParser;
 import ru.nordmine.nordlang.syntax.exceptions.SyntaxException;
 
 import java.io.ByteArrayOutputStream;
@@ -21,7 +16,7 @@ public class MethodTest {
     @DataProvider
     public Object[][] sourceDataProvider() {
         return new Object[][]{
-                /*{"string getMessage() { return \"Превед!\"; } int main() { echo getMessage(); return 0; }", "Превед!"},
+                {"string getMessage() { return \"Превед!\"; } int main() { echo getMessage(); return 0; }", "Превед!"},
                 {"int main() { echo getMessage(); return 0; } string getMessage() { return \"Превед!\"; }", "Превед!"},
                 {"string getMessage() { return \"Превед\"; } int main() { string message = getMessage() + '!';" +
                         " echo message; return 0; }", "Превед!"},
@@ -44,7 +39,7 @@ public class MethodTest {
                         "int[] init() { int[] ar = [1,2,3]; return ar; }", "[1,2,3]"},
                 {"int main() { int[] ar = [1,2,3]; echo ar[1]; ar = mod(ar); echo ar[1]; return 0;} " +
                         "int[] mod(int[] ar) { ar[1] = 100; return ar; }", "2100"},
-                {"int main() { if(ok()) { echo 'a'; } echo 'b'; return 0; } bool ok() { return true; }", "ab"},*/
+                {"int main() { if(ok()) { echo 'a'; } echo 'b'; return 0; } bool ok() { return true; }", "ab"},
                 {"const int MAGIC = 42; int main() { echo magic(); return 0; } int magic() { return MAGIC; }", "42"}
         };
     }
@@ -87,20 +82,20 @@ public class MethodTest {
     }
 
 
-    @Test(
-            expectedExceptions = SyntaxException.class,
-            expectedExceptionsMessageRegExp = "Syntax error at line 3: method with name 'test' already defined"
-    )
-    public void methodNameDuplication() throws LangException {
-        getResult("int main() { return test(1); }\nint test(int a, int b) { return 0;}\nint test(int a) { return 0;}");
-    }
+//    @Test(
+//            expectedExceptions = SyntaxException.class,
+//            expectedExceptionsMessageRegExp = "Syntax error at line 3: method with name 'test' already defined"
+//    )
+//    public void methodNameDuplication() throws LangException {
+//        getResult("int main() { return test(1); }\nint test(int a, int b) { return 0;}\nint test(int a) { return 0;}");
+//    }
 
     @Test(
             expectedExceptions = SyntaxException.class,
-            expectedExceptionsMessageRegExp = "Syntax error at line 1: method should return int, but was bool"
+            expectedExceptionsMessageRegExp = "Syntax error at line 2: method should return int, but was string"
     )
     public void badReturnType() throws LangException {
-        getResult("int main() { return false; }");
+        getResult("int main()\n { return \"ok\"; }");
     }
 
     @Test(
@@ -113,7 +108,7 @@ public class MethodTest {
 
     @Test(
             expectedExceptions = SyntaxException.class,
-            expectedExceptionsMessageRegExp = "Syntax error at line 1: method int main\\(\\) is not defined"
+            expectedExceptionsMessageRegExp = "Syntax error: method int main\\(\\) is not defined"
     )
     public void methodMainNotFound() throws LangException {
         getResult("string getMessage() { return \"Превед\"; }");

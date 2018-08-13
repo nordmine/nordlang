@@ -29,7 +29,12 @@ public class WordToken extends Token {
     private final String lexeme;
 
     public WordToken(Tag tag, String lexeme) {
-        super(tag);
+        super(tag, 1); // todo fix line
+        this.lexeme = lexeme;
+    }
+
+    public WordToken(Tag tag, String lexeme, int line) {
+        super(tag, line);
         this.lexeme = lexeme;
     }
 
