@@ -40,7 +40,7 @@ public class MethodTest {
                 {"int main() { int[] ar = [1,2,3]; echo ar[1]; ar = mod(ar); echo ar[1]; return 0;} " +
                         "int[] mod(int[] ar) { ar[1] = 100; return ar; }", "2100"},
                 {"int main() { if(ok()) { echo 'a'; } echo 'b'; return 0; } bool ok() { return true; }", "ab"},
-                {"const int MAGIC = 42; int main() { echo magic(); return 0; } int magic() { return MAGIC; }", "42"}
+                {"const int MAGIC_NUMBER = 42; int main() { echo magic(); return 0; } int magic() { return MAGIC_NUMBER; }", "42"}
         };
     }
 

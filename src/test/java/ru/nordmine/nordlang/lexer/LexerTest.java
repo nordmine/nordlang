@@ -134,6 +134,15 @@ public class LexerTest {
         lexer.nextToken();
     }
 
+    @Test
+    public void constName() throws SyntaxException {
+        lexer = new StringLexer(" const M_PI = 3");
+        assertEquals(nextTag(), Tag.CONST);
+        assertEquals(nextTag(), Tag.ID);
+        assertEquals(nextTag(), Tag.ASSIGN);
+        assertEquals(nextTag(), Tag.INT);
+    }
+
     private Tag nextTag() throws SyntaxException {
         return lexer.nextToken().getTag();
     }

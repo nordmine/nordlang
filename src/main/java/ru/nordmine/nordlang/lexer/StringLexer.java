@@ -19,11 +19,6 @@ public class StringLexer implements Lexer {
     private final char[] source;
     private int line = 1;
 
-    @Override
-    public int getLine() {
-        return line;
-    }
-
     public StringLexer(String source) {
         reserve(WordToken.AND);
         reserve(WordToken.OR);
@@ -72,7 +67,7 @@ public class StringLexer implements Lexer {
     }
 
     private boolean nextIsLetterOrDigit() {
-        return hasNext() && Character.isLetterOrDigit(source[nextPosition]);
+        return hasNext() && (Character.isLetterOrDigit(source[nextPosition]) || source[nextPosition] == '_');
     }
 
     @Override

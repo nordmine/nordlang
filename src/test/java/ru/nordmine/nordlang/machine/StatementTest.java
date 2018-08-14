@@ -41,13 +41,13 @@ public class StatementTest extends MachineTest {
         getResult("int a = 1; if (a) {echo 2;}");
     }
 
-//    @Test(
-//            expectedExceptions = SyntaxException.class,
-//            expectedExceptionsMessageRegExp = "Syntax error at line 2: boolean value required in while"
-//    )
-//    public void nonBoolValueInWhile() throws LangException {
-//        getResult("int a = 1;\nwhile (a)\n{echo 2;}");
-//    }
+    @Test(
+            expectedExceptions = SyntaxException.class,
+            expectedExceptionsMessageRegExp = "Syntax error at line 2: boolean value required in while"
+    )
+    public void nonBoolValueInWhile() throws LangException {
+        getResult("\nwhile (1 + 1)\n{echo 2;}");
+    }
 
     @Test(
             expectedExceptions = SyntaxException.class,

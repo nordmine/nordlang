@@ -2,8 +2,8 @@ nordlang
 ========
 Пример скрипта:
 ```C#
-const string CAPITALIZED = "ABCDEFGHIJKLMNOPQRSTUVWXYZАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
-const string LOWERED = "abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+const string ABC_CAPITALIZED = "ABCDEFGHIJKLMNOPQRSTUVWXYZАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+const string ABC_LOWERED = "abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
 const string DIGITS = "0123456789";
 
 int main() {
@@ -101,9 +101,9 @@ string toUpper(string original) {
 }
 
 char toUpperChar(char c) {
-    int pos = findChar(c, LOWERED);
+    int pos = findChar(c, ABC_LOWERED);
     if (pos > 0) {
-        c = CAPITALIZED[pos];
+        c = ABC_CAPITALIZED[pos];
     }
     return c;
 }
@@ -120,9 +120,9 @@ string toLower(string original) {
 }
 
 char toLowerChar(char c) {
-    int pos = findChar(c, CAPITALIZED);
+    int pos = findChar(c, ABC_CAPITALIZED);
     if (pos > 0) {
-        c = LOWERED[pos];
+        c = ABC_LOWERED[pos];
     }
     return c;
 }

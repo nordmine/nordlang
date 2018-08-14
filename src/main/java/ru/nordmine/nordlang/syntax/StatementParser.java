@@ -55,15 +55,6 @@ public class StatementParser {
         this.scope = scope;
     }
 
-    public Program createProgram() throws SyntaxException {
-        Program program = new Program();
-        Statement s = block();
-        Label begin = program.newLabel();
-        Label after = program.newLabel();
-        s.gen(program, begin, after);
-        return program;
-    }
-
     private Statement block() throws SyntaxException {
         if (context.getLook() == null) {
             context.move();
@@ -113,7 +104,7 @@ public class StatementParser {
                 savedStatement = Statement.Enclosing;
                 Statement.Enclosing = whileStatement;
                 context.match(Tag.WHILE);
-                context. match(Tag.OPEN_BRACKET);
+                context.match(Tag.OPEN_BRACKET);
                 x = bool();
                 context.match(Tag.CLOSE_BRACKET);
                 s1 = statement();
