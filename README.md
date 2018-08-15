@@ -7,9 +7,11 @@ const string ABC_LOWERED = "abcdefghijklmnopqrstuvwxyzабвгдеёжзийкл
 const string DIGITS = "0123456789";
 
 int main() {
-    string text = "    Some Text    ";
-    string trimmedText = trim(text);
-    echo "Original: *" + text + "*" + newLine;
+    string text = "Красный; Жёлтый; Зелёный";
+    echo "source: *" + text + "*" + newLine;
+    string[] parts = split(text, ';');
+    echo "Split parts: " + parts + newLine;
+    string trimmedText = trim(parts[1]);
     echo "Trimmed: *" + trimmedText + "*" + newLine;
     echo "Reversed: " + reverseString(trimmedText) + newLine;
     echo "Upper: " + toUpper(trimmedText) + newLine;
@@ -18,6 +20,28 @@ int main() {
 }
 
 // String utils
+
+string substring(string source, int start) {
+    int i = start;
+    int len = size(source);
+    string result = "";
+    while(i < len) {
+        result = result + source[i];
+        i++;
+    }
+    return result;
+}
+
+string substringLimited(string source, int start, int length) {
+    int i = start;
+    int len = size(source);
+    string result = "";
+    while(i < len and i < length) {
+        result = result + source[i];
+        i++;
+    }
+    return result;
+}
 
 string trim(string source) {
     return trimLeft(trimRight(source));
@@ -66,22 +90,26 @@ string implode(string[] parts, string glue) {
     return joined;
 }
 
-string reverseString(string original) {
-    int len = size(original);
+string reverseString(string source) {
+    int len = size(source);
     string result = "";
     int i = len - 1;
     while(i >= 0) {
-        result = result + original[i];
+        result = result + source[i];
         i--;
     }
     return result;
 }
 
-int findChar(char c, string where) {
-    int len = size(where);
-    int i = 0;
+int findChar(string source, char c) {
+    return findCharFrom(source, c, 0);
+}
+
+int findCharFrom(string source, char c, int from) {
+    int len = size(source);
+    int i = from;
     while(i < len) {
-        if (where[i] == c) {
+        if (source[i] == c) {
             return i;
         }
         i++;
@@ -89,50 +117,68 @@ int findChar(char c, string where) {
     return -1;
 }
 
-string toUpper(string original) {
+string[] split(string source, char delimiter) {
+    string[] parts = [];
+    int from = 0;
+    int to = 0;
+    int len = size(source);
+    while(from < len) {
+        to = findCharFrom(source, delimiter, from);
+        if (to == -1) {
+            parts[] = substring(source, from);
+            break;
+        } else {
+            parts[] = substringLimited(source, from, to);
+        }
+        from = to + 1;
+    }
+    return parts;
+}
+
+string toUpper(string source) {
     int i = 0;
-    int len = size(original);
+    int len = size(source);
     string upper = "";
     while(i < len) {
-        upper = upper + toUpperChar(original[i]);
+        upper = upper + toUpperChar(source[i]);
         i++;
     }
     return upper;
 }
 
 char toUpperChar(char c) {
-    int pos = findChar(c, ABC_LOWERED);
+    int pos = findChar(ABC_LOWERED, c);
     if (pos > 0) {
         c = ABC_CAPITALIZED[pos];
     }
     return c;
 }
 
-string toLower(string original) {
+string toLower(string source) {
     int i = 0;
-    int len = size(original);
+    int len = size(source);
     string lower = "";
     while(i < len) {
-        lower = lower + toLowerChar(original[i]);
+        lower = lower + toLowerChar(source[i]);
         i++;
     }
     return lower;
 }
 
 char toLowerChar(char c) {
-    int pos = findChar(c, ABC_CAPITALIZED);
+    int pos = findChar(ABC_CAPITALIZED, c);
     if (pos > 0) {
         c = ABC_LOWERED[pos];
     }
     return c;
 }
 
-bool containsChar(char c, string where) {
-    return findChar(c, where) >= 0;
+bool containsChar(string where, char c) {
+    return findChar(where, c) >= 0;
 }
 
 bool isDigit(char c) {
-    return containsChar(c, DIGITS);
+    return containsChar(DIGITS, c);
 }
 
 // Math utils
